@@ -53,7 +53,7 @@ namespace NavalArchitectureSuite.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/NavalArchitectureSuite;V1.0.0.0;component/views/manoeuvringview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/NavalArchitectureSuite;component/views/manoeuvringview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\ManoeuvringView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

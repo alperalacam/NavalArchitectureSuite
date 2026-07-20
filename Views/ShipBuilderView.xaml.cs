@@ -19,7 +19,18 @@ namespace NavalArchitectureSuite.Views
         {
             InitializeComponent();
             DataContext = ShipBuilderViewModel.Instance;  // Use the shared singleton
+
+            // First attempt: when the control is laid out.
             Loaded += (_, _) => ZoomToHullBounds(0);
+
+            // Second attempt: every time the view is navigated back to (IsVisibleChanged)
+            // because the viewport may not have rendered on the very first Loaded call
+            // when ShipBuilderView is kept alive as a singleton across nav clicks.
+            IsVisibleChanged += (_, e) =>
+            {
+                if ((bool)e.NewValue)
+                    ZoomToHullBounds(0);
+            };
         }
 
         private void ResetViewButton_Click(object sender, RoutedEventArgs e) =>
@@ -36,6 +47,27 @@ namespace NavalArchitectureSuite.Views
         private void FrontViewButton_Click(object sender, RoutedEventArgs e) =>
             // Stern is at X=0, bow at X=Lpp (per HullMeshBuilder) — look from beyond the bow toward the stern.
             SetViewAndFit(new Point3D(1000, 0, 0), new Vector3D(-1, 0, 0), new Vector3D(0, 0, 1));
+
+        private HullViewportWindow? _popOutWindow;
+
+        private void PopOutViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If already open, bring it to front instead of opening a second one.
+            if (_popOutWindow is not null && _popOutWindow.IsVisible)
+            {
+                _popOutWindow.Activate();
+                return;
+            }
+            _popOutWindow = new HullViewportWindow();
+            _popOutWindow.Owner = Window.GetWindow(this);
+            _popOutWindow.Show();
+        }
+
+        private void UprightButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ShipBuilderViewModel vm)
+                vm.HeelAngle = 0.0;
+        }
 
         private void FitToScreenButton_Click(object sender, RoutedEventArgs e) =>
             ZoomToHullBounds(400);
@@ -63,8 +95,12 @@ namespace NavalArchitectureSuite.Views
             {
                 Rect3D bounds = viewModel.HullModel.Bounds;
                 if (bounds.IsEmpty) return;
-                HullViewport.ZoomExtents(bounds, animationTime);
-            }, DispatcherPriority.Loaded);
+
+                // ZoomExtents with bounds can silently no-op when the camera is very
+                // close to the geometry. Call ZoomExtents on the viewport directly with
+                // a generous margin so HelixToolkit recalculates the full scene radius.
+                HullViewport.ZoomExtents(animationTime);
+            }, DispatcherPriority.Render);
         }
     }
 }

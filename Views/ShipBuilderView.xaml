@@ -265,7 +265,32 @@
                                 <Button x:Name="FitToScreenButton" Content="Fit to Screen" Click="FitToScreenButton_Click"
                                         Style="{StaticResource ViewportToolbarButtonStyle}"
                                         ToolTip="Zoom to fit the hull in view"/>
+                                <Button x:Name="PopOutViewButton" Content="⤢  Pop Out 3D View" Click="PopOutViewButton_Click"
+                                        Style="{StaticResource ViewportToolbarButtonStyle}"
+                                        ToolTip="Open the 3D hull in a resizable floating window"/>
                             </WrapPanel>
+
+                            <!-- Heel Angle Slider -->
+                            <Grid Margin="0,6,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Heel Angle" Foreground="#8FA6C9" FontSize="11.5"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Slider Grid.Column="1" Minimum="-45" Maximum="45" Value="{Binding HeelAngle, Mode=TwoWay}"
+                                        VerticalAlignment="Center" TickFrequency="5" IsSnapToTickEnabled="False"
+                                        Foreground="#C8960C"/>
+                                <TextBlock Grid.Column="2" Foreground="#F2C94C" FontSize="12" FontWeight="Bold"
+                                           VerticalAlignment="Center" Margin="10,0,4,0"
+                                           Text="{Binding HeelAngle, StringFormat='{}{0:F1}°'}"/>
+                                <Button Grid.Column="3" Content="Upright" Margin="6,0,0,0"
+                                        Style="{StaticResource ViewportToolbarButtonStyle}"
+                                        Command="{x:Null}" Click="UprightButton_Click"
+                                        ToolTip="Reset heel to 0°"/>
+                            </Grid>
                             <Border BorderBrush="#24467F" BorderThickness="1" CornerRadius="4" Background="#0A1F3D" Height="420">
                                 <h:HelixViewport3D x:Name="HullViewport" ZoomExtentsWhenLoaded="True"
                                                     ShowCoordinateSystem="True"
@@ -281,7 +306,15 @@
                                         <PerspectiveCamera Position="0,0,1000" LookDirection="0,0,-1" UpDirection="1,0,0" FieldOfView="45"/>
                                     </h:HelixViewport3D.Camera>
                                     <h:SunLight/>
-                                    <ModelVisual3D Content="{Binding HullModel}"/>
+                                    <ModelVisual3D Content="{Binding HullModel}">
+                                        <ModelVisual3D.Transform>
+                                            <RotateTransform3D>
+                                                <RotateTransform3D.Rotation>
+                                                    <AxisAngleRotation3D Axis="1,0,0" Angle="{Binding HeelAngle}"/>
+                                                </RotateTransform3D.Rotation>
+                                            </RotateTransform3D>
+                                        </ModelVisual3D.Transform>
+                                    </ModelVisual3D>
 
                                     <h:BillboardTextVisual3D Text="BOW" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
                                                               Position="{Binding BowLabelPosition}"/>

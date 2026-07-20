@@ -52,7 +52,7 @@ namespace NavalArchitectureSuite.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/NavalArchitectureSuite;V1.0.0.0;component/views/moduleplaceholderview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/NavalArchitectureSuite;component/views/moduleplaceholderview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\ModulePlaceholderView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -201,6 +201,14 @@ namespace NavalArchitectureSuite.ViewModels
             private set => SetField(ref _starboardLabelPosition, value);
         }
 
+        private double _heelAngle = 0.0;
+        /// <summary>Applied heel angle in degrees (positive = port side down).</summary>
+        public double HeelAngle
+        {
+            get => _heelAngle;
+            set => SetField(ref _heelAngle, value);
+        }
+
         public ShipBuilderViewModel() => Recalculate();
 
         private void Recalculate()
