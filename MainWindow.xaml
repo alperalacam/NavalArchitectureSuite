@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NavalArchitectureSuite"
         mc:Ignorable="d"
-        Title="Naval Architecture Engineering Suite"
+        Title="Naval Architecture Engineering Suite v1.0"
         Icon="naval_architecture_suite.ico"
         Height="720" Width="1280"
         MinHeight="650" MinWidth="1280"
@@ -66,7 +66,7 @@
             <Grid Margin="24,0">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Image Source="naval_architecture_suite_64.png" Width="40" Height="40" Stretch="Uniform"/>
-                    <TextBlock Text="Naval Architecture Engineering Suite" Foreground="White" FontSize="22"
+                    <TextBlock Text="Naval Architecture Engineering Suite v1.0" Foreground="White" FontSize="22"
                                FontWeight="SemiBold" VerticalAlignment="Center" Margin="16,0,0,0"/>
                 </StackPanel>
             </Grid>
@@ -133,7 +133,7 @@
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="0,1,0,0">
-            <TextBlock Text="28 Volumes | 3246 Live Formulas | Alper Alacam | Turkiye | 2026"
+            <TextBlock Text="28 Volumes | 3246 Live Formulas | Alper Alacam | Turkiye | 2026 | v1.0"
                        Foreground="#C8960C" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
     </Grid>

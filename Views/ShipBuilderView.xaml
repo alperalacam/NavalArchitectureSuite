@@ -276,7 +276,7 @@
                                                     ShowViewCube="True"
                                                     ViewCubeHorizontalPosition="Right"
                                                     ViewCubeVerticalPosition="Top"
-                                                    Background="Transparent">
+                                                    Background="#000000">
                                     <h:HelixViewport3D.Camera>
                                         <PerspectiveCamera Position="30,-220,140" LookDirection="-30,220,-140" UpDirection="0,0,1" FieldOfView="45"/>
                                     </h:HelixViewport3D.Camera>

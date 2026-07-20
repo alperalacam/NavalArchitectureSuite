@@ -85,6 +85,9 @@ namespace NavalArchitectureSuite.ViewModels
         private double _bm;
         public double Bm { get => _bm; private set => SetField(ref _bm, value); }
 
+        private double _km;
+        public double Km { get => _km; private set => SetField(ref _km, value); }
+
         private double _gm;
         public double Gm { get => _gm; private set => SetField(ref _gm, value); }
 
@@ -153,7 +156,8 @@ namespace NavalArchitectureSuite.ViewModels
             WaterplaneArea = Cwp * Lwl * Bwl;
             TransverseInertia = Lwl * Math.Pow(Bwl, 3) * (0.1216 * Cwp - 0.0410);
             Bm = VolumeDisplacement > 0 ? TransverseInertia / VolumeDisplacement : 0.0;
-            Gm = Kb + Bm - Kg;
+            Km = Kb + Bm;
+            Gm = Km - Kg;
             OnPropertyChanged(nameof(GmIsPositive));
 
             double freeboard = Depth - DraftT;

@@ -180,6 +180,29 @@ namespace NavalArchitectureSuite.ViewModels
         private double _maxGzAngle;
         public double MaxGzAngle { get => _maxGzAngle; private set => SetField(ref _maxGzAngle, value); }
 
+        private double _gz30;
+        public double Gz30 { get => _gz30; private set => SetField(ref _gz30, value); }
+
+        private double _area030;
+        public double Area030 { get => _area030; private set => SetField(ref _area030, value); }
+
+        private double _area040;
+        public double Area040 { get => _area040; private set => SetField(ref _area040, value); }
+
+        private double _area3040;
+        public double Area3040 { get => _area3040; private set => SetField(ref _area3040, value); }
+
+        /// <summary>
+        /// Range of positive righting arm, in degrees from 0°. The wall-sided GZ formula used
+        /// here (see class remarks) has no interior peak/decline within its valid range, so it
+        /// never crosses back to GZ = 0 the way a real hull-form curve does — there is no
+        /// computable "angle of vanishing stability". As a practical proxy, when GM(fluid) is
+        /// positive (so GZ stays positive from 0°), the range is reported up to the down-flooding
+        /// angle, the same operational limit already used to cap θ2 in the weather criterion.
+        /// </summary>
+        private double _rangeOfPositiveStability;
+        public double RangeOfPositiveStability { get => _rangeOfPositiveStability; private set => SetField(ref _rangeOfPositiveStability, value); }
+
         public ObservableCollection<GzPoint> GzTable { get; } = new();
         public ObservableCollection<HydrostaticsCriterion> Criteria { get; } = new();
 
@@ -423,6 +446,12 @@ namespace NavalArchitectureSuite.ViewModels
             double area030 = AreaUnderGz(0, 30);
             double area040 = AreaUnderGz(0, 40);
             double area3040 = AreaUnderGz(30, 40);
+
+            Gz30 = gz30;
+            Area030 = area030;
+            Area040 = area040;
+            Area3040 = area3040;
+            RangeOfPositiveStability = GmFluid >= 0 ? DownfloodingAngle : 0.0;
 
             Criteria.Add(new HydrostaticsCriterion
             {

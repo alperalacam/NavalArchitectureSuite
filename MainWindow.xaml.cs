@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using NavalArchitectureSuite.Models;
 using NavalArchitectureSuite.Services;
+using NavalArchitectureSuite.ViewModels;
 using NavalArchitectureSuite.Views;
 
 namespace NavalArchitectureSuite
@@ -13,10 +14,24 @@ namespace NavalArchitectureSuite
     {
         private readonly Dictionary<string, NavItem> _navItems = BuildNavItems();
 
+        // Reports needs to read live figures out of these three modules for its PDF export,
+        // so (unlike the other modules) they are created once and kept alive for the session
+        // rather than being recreated with `new` on every nav click.
+        private readonly HydrostaticsView _hydrostaticsView = new();
+        private readonly StabilityView _stabilityView = new();
+        private readonly ResistancePropulsionView _resistanceView = new();
+        private readonly ReportsView _reportsView;
+
         public MainWindow()
         {
             InitializeComponent();
             BtnShipBuilder.IsChecked = true;
+
+            _reportsView = new ReportsView();
+            var reportsViewModel = (ReportsViewModel)_reportsView.DataContext;
+            reportsViewModel.HydrostaticsSource = (HydrostaticsViewModel)_hydrostaticsView.DataContext;
+            reportsViewModel.StabilitySource = (StabilityViewModel)_stabilityView.DataContext;
+            reportsViewModel.ResistanceSource = (ResistancePropulsionViewModel)_resistanceView.DataContext;
 
             RestoreWindowBounds();
             ClampToWorkArea();
@@ -106,13 +121,13 @@ namespace NavalArchitectureSuite
 
             if (key == "Hydrostatics")
             {
-                ContentFrame.Content = new HydrostaticsView();
+                ContentFrame.Content = _hydrostaticsView;
                 return;
             }
 
             if (key == "Resistance")
             {
-                ContentFrame.Content = new ResistancePropulsionView();
+                ContentFrame.Content = _resistanceView;
                 return;
             }
 
@@ -124,7 +139,7 @@ namespace NavalArchitectureSuite
 
             if (key == "Stability")
             {
-                ContentFrame.Content = new StabilityView();
+                ContentFrame.Content = _stabilityView;
                 return;
             }
 
@@ -166,7 +181,7 @@ namespace NavalArchitectureSuite
 
             if (key == "Reports")
             {
-                ContentFrame.Content = new ReportsView();
+                ContentFrame.Content = _reportsView;
                 return;
             }
 
