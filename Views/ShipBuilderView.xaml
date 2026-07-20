@@ -278,7 +278,7 @@
                                                     ViewCubeVerticalPosition="Top"
                                                     Background="#000000">
                                     <h:HelixViewport3D.Camera>
-                                        <PerspectiveCamera Position="30,-220,140" LookDirection="-30,220,-140" UpDirection="0,0,1" FieldOfView="45"/>
+                                        <PerspectiveCamera Position="0,0,1000" LookDirection="0,0,-1" UpDirection="1,0,0" FieldOfView="45"/>
                                     </h:HelixViewport3D.Camera>
                                     <h:SunLight/>
                                     <ModelVisual3D Content="{Binding HullModel}"/>
