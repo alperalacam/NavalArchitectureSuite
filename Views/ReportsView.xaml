@@ -157,6 +157,69 @@
             </Setter>
         </Style>
 
+        <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource InputComboBoxItemStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          ClickMode="Press"
+                                          Focusable="False">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="22"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="#C8960C"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Background="Transparent"
+                                     Foreground="White"
+                                     CaretBrush="#C8960C"
+                                     BorderThickness="0"
+                                     Padding="{TemplateBinding Padding}"
+                                     FontSize="{TemplateBinding FontSize}"
+                                     VerticalAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalAlignment="Stretch"
+                                     Margin="0,0,22,0"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     Focusable="{TemplateBinding IsEditable}"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="1" CornerRadius="4">
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="ModuleColTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#D7E1F0"/>
             <Setter Property="FontSize" Value="13"/>
@@ -276,8 +339,7 @@
 
                             <TextBlock Text="Module" Style="{StaticResource InputLabelStyle}"/>
                             <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Module, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14"
-                                      ItemContainerStyle="{StaticResource InputComboBoxItemStyle}">
+                                      Style="{StaticResource InputComboBoxStyle}">
                                 <ComboBoxItem Content="Hydrostatics"/>
                                 <ComboBoxItem Content="Stability"/>
                                 <ComboBoxItem Content="Damage Stability"/>
@@ -302,8 +364,7 @@
 
                             <TextBlock Text="Status" Style="{StaticResource InputLabelStyle}"/>
                             <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Status, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14"
-                                      ItemContainerStyle="{StaticResource InputComboBoxItemStyle}">
+                                      Style="{StaticResource InputComboBoxStyle}">
                                 <ComboBoxItem Content="Draft"/>
                                 <ComboBoxItem Content="Issued for Review"/>
                                 <ComboBoxItem Content="Approved"/>
