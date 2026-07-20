@@ -30,7 +30,7 @@ namespace NavalArchitectureSuite.Views
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.ExportMarkdown();
+            ViewModel.ExportPdf();
         }
     }
 }

@@ -4,9 +4,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Microsoft.Win32;
 using NavalArchitectureSuite.Models;
+using NavalArchitectureSuite.Services;
 
 namespace NavalArchitectureSuite.ViewModels
 {
@@ -18,8 +18,8 @@ namespace NavalArchitectureSuite.ViewModels
     /// bind to live figures from other modules. Instead it manages a local index of
     /// deliverable report entries (title, source module, revision, status, etc.) plus a
     /// small static formula-library audit summary, and provides a genuinely functional
-    /// export: ExportMarkdown() writes a real Markdown file to disk via a SaveFileDialog
-    /// and File.WriteAllText.
+    /// export: ExportPdf() writes a real PDF file to disk via a SaveFileDialog, built with
+    /// the dependency-free SimplePdfDocument writer.
     /// </summary>
     public class ReportsViewModel : INotifyPropertyChanged
     {
@@ -152,13 +152,13 @@ namespace NavalArchitectureSuite.ViewModels
         private string _exportStatusMessage = string.Empty;
         public string ExportStatusMessage { get => _exportStatusMessage; set => SetField(ref _exportStatusMessage, value); }
 
-        public void ExportMarkdown()
+        public void ExportPdf()
         {
             var dialog = new SaveFileDialog
             {
-                FileName = $"{SanitizeFileName(ProjectNumber)}_Report_Index.md",
-                Filter = "Markdown files (*.md)|*.md|All files (*.*)|*.*",
-                DefaultExt = ".md"
+                FileName = $"{SanitizeFileName(ProjectNumber)}_Report_Index.pdf",
+                Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*",
+                DefaultExt = ".pdf"
             };
 
             bool? result = dialog.ShowDialog();
@@ -170,8 +170,8 @@ namespace NavalArchitectureSuite.ViewModels
 
             try
             {
-                string markdown = BuildMarkdownReport();
-                System.IO.File.WriteAllText(dialog.FileName, markdown);
+                byte[] pdf = BuildPdfReport();
+                System.IO.File.WriteAllBytes(dialog.FileName, pdf);
                 ExportStatusMessage = $"Exported to {dialog.FileName}";
             }
             catch (Exception ex)
@@ -187,51 +187,47 @@ namespace NavalArchitectureSuite.ViewModels
             return name;
         }
 
-        public string BuildMarkdownReport()
+        public byte[] BuildPdfReport()
         {
-            var sb = new StringBuilder();
+            var doc = new SimplePdfDocument();
 
-            sb.AppendLine($"# {ProjectName}");
-            sb.AppendLine();
-            sb.AppendLine("| Field | Value |");
-            sb.AppendLine("|---|---|");
-            sb.AppendLine($"| Project Number | {ProjectNumber} |");
-            sb.AppendLine($"| Client | {Client} |");
-            sb.AppendLine($"| Classification Society | {ClassSociety} |");
-            sb.AppendLine($"| Prepared By | {PreparedByCompany} |");
-            sb.AppendLine($"| Export Date | {DateTime.Now:yyyy-MM-dd HH:mm} |");
-            sb.AppendLine();
+            doc.AddLine(ProjectName, size: 16, bold: true);
+            doc.AddSpacer(10);
+            doc.AddLine($"Project Number: {ProjectNumber}");
+            doc.AddLine($"Client: {Client}");
+            doc.AddLine($"Classification Society: {ClassSociety}");
+            doc.AddLine($"Prepared By: {PreparedByCompany}");
+            doc.AddLine($"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm}");
+            doc.AddSpacer(14);
 
-            sb.AppendLine("## Report Index");
-            sb.AppendLine();
-            sb.AppendLine("| Title | Module | Revision | Status | Prepared By | Date | Notes |");
-            sb.AppendLine("|---|---|---|---|---|---|---|");
+            doc.AddLine("REPORT INDEX", size: 13, bold: true);
+            doc.AddSpacer(6);
             foreach (var entry in Entries.Where(e => e.IncludeInExport))
             {
-                sb.AppendLine($"| {EscapeCell(entry.Title)} | {EscapeCell(entry.Module)} | {EscapeCell(entry.Revision)} | " +
-                               $"{EscapeCell(entry.Status)} | {EscapeCell(entry.PreparedBy)} | {EscapeCell(entry.DateIso)} | {EscapeCell(entry.Notes)} |");
+                doc.AddLine(entry.Title, size: 11, bold: true);
+                doc.AddLine($"Module: {entry.Module}   Revision: {entry.Revision}   Status: {entry.Status}", size: 9);
+                doc.AddLine($"Prepared By: {entry.PreparedBy}   Date: {entry.DateIso}", size: 9);
+                if (!string.IsNullOrWhiteSpace(entry.Notes))
+                    doc.AddWrapped($"Notes: {entry.Notes}", maxChars: 88, size: 9);
+                doc.AddSpacer(10);
             }
-            sb.AppendLine();
+            doc.AddRule();
+            doc.AddSpacer(10);
 
-            sb.AppendLine("## Formula Library Audit");
-            sb.AppendLine();
-            sb.AppendLine("| Module | Live Formula Count |");
-            sb.AppendLine("|---|---|");
+            doc.AddLine("FORMULA LIBRARY AUDIT — LIVE FORMULAS BY MODULE", size: 13, bold: true);
+            doc.AddSpacer(6);
+            doc.AddTwoColumn("Module", "Formulas", totalChars: 60, size: 9, bold: true);
+            doc.AddRule(60);
             foreach (var row in FormulaAudit)
-            {
-                sb.AppendLine($"| {EscapeCell(row.Module)} | {row.FormulaCount} |");
-            }
-            sb.AppendLine($"| **Total** | **{TotalFormulaCount}** |");
-            sb.AppendLine();
+                doc.AddTwoColumn(row.Module, row.FormulaCount.ToString(), totalChars: 60, size: 9);
+            doc.AddRule(60);
+            doc.AddTwoColumn("Total", TotalFormulaCount.ToString(), totalChars: 60, size: 9, bold: true);
 
-            sb.AppendLine("---");
-            sb.AppendLine("Generated by Naval Architecture Engineering Suite");
+            doc.AddSpacer(16);
+            doc.AddLine("Generated by Naval Architecture Engineering Suite", size: 8);
 
-            return sb.ToString();
+            return doc.Build();
         }
-
-        private static string EscapeCell(string? value) =>
-            (value ?? string.Empty).Replace("|", "\\|").Replace("\r", " ").Replace("\n", " ");
 
         #endregion
 
@@ -252,7 +248,7 @@ namespace NavalArchitectureSuite.ViewModels
                 Module = "Stability",
                 Revision = "B",
                 PreparedBy = "A. Alacam",
-                DateIso = "2026-06-02",
+                DateIso = DateTime.Today.ToString("yyyy-MM-dd"),
                 Status = "Approved",
                 Notes = "IMO 2008 IS Code, all loading conditions."
             });

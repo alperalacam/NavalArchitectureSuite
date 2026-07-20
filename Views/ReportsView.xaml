@@ -134,6 +134,29 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
 
+        <Style x:Key="InputComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="#1B3A6B" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#24467F"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#20396B"/>
+                                <Setter Property="Foreground" Value="#F2C94C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="ModuleColTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#D7E1F0"/>
             <Setter Property="FontSize" Value="13"/>
@@ -253,7 +276,8 @@
 
                             <TextBlock Text="Module" Style="{StaticResource InputLabelStyle}"/>
                             <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Module, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14">
+                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14"
+                                      ItemContainerStyle="{StaticResource InputComboBoxItemStyle}">
                                 <ComboBoxItem Content="Hydrostatics"/>
                                 <ComboBoxItem Content="Stability"/>
                                 <ComboBoxItem Content="Damage Stability"/>
@@ -278,7 +302,8 @@
 
                             <TextBlock Text="Status" Style="{StaticResource InputLabelStyle}"/>
                             <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Status, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14">
+                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14"
+                                      ItemContainerStyle="{StaticResource InputComboBoxItemStyle}">
                                 <ComboBoxItem Content="Draft"/>
                                 <ComboBoxItem Content="Issued for Review"/>
                                 <ComboBoxItem Content="Approved"/>
@@ -373,9 +398,9 @@
                         <StackPanel>
                             <TextBlock Text="Generate Report Index" Style="{StaticResource SectionTitleStyle}"/>
                             <TextBlock Foreground="#8FA6C9" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,14" Opacity="0.85"
-                                       Text="Compiles the project title block, all report entries flagged 'Include in export', and the formula-library audit into a single Markdown (.md) file."/>
+                                       Text="Compiles the project title block, all report entries flagged 'Include in export', and the formula-library audit into a single printable PDF (.pdf) file."/>
 
-                            <Button x:Name="ExportButton" Content="Export Report Index (.md)" Click="ExportButton_Click"
+                            <Button x:Name="ExportButton" Content="Export Report Index (.pdf)" Click="ExportButton_Click"
                                     Style="{StaticResource ExportButtonStyle}"/>
 
                             <TextBlock Text="{Binding ExportStatusMessage}" Foreground="#D7E1F0" FontSize="12"
