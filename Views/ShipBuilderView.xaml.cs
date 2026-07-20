@@ -8,15 +8,17 @@ namespace NavalArchitectureSuite.Views
 {
     public partial class ShipBuilderView : UserControl
     {
-        // Matches the isometric camera declared on HullViewport in XAML.
-        private static readonly Point3D DefaultCameraPosition = new(30, -220, 140);
-        private static readonly Vector3D DefaultCameraLookDirection = new(-30, 220, -140);
-        private static readonly Vector3D DefaultUpDirection = new(0, 0, 1);
+        // Matches the top-down plan camera declared on HullViewport in XAML:
+        // looking straight down with +X (bow) mapped to the top of the screen, so
+        // BOW is up, STERN is down, PORT (+Y) is left and STARBOARD (-Y) is right.
+        private static readonly Point3D DefaultCameraPosition = new(0, 0, 1000);
+        private static readonly Vector3D DefaultCameraLookDirection = new(0, 0, -1);
+        private static readonly Vector3D DefaultUpDirection = new(1, 0, 0);
 
         public ShipBuilderView()
         {
             InitializeComponent();
-            DataContext = new ShipBuilderViewModel();
+            DataContext = ShipBuilderViewModel.Instance;  // Use the shared singleton
             Loaded += (_, _) => ZoomToHullBounds(0);
         }
 

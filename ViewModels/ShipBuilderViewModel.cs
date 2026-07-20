@@ -14,6 +14,9 @@ namespace NavalArchitectureSuite.ViewModels
     /// </summary>
     public sealed class ShipBuilderViewModel : INotifyPropertyChanged
     {
+        // Singleton – every module reads ship particulars from this one instance.
+        public static readonly ShipBuilderViewModel Instance = new();
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public static readonly string[] VesselTypeNames =
@@ -167,7 +170,9 @@ namespace NavalArchitectureSuite.ViewModels
 
         // Orientation label positions for the 3D viewport's BillboardTextVisual3D markers.
         // Match HullMeshBuilder's convention: stern X=0, bow X=Lpp, centerline Y=0,
-        // +Y=starboard, keel Z=0, deck Z=Depth.
+        // +Y=port, -Y=starboard (right-handed scene with +X=forward/bow, +Z=up, so the
+        // true-right side facing the bow is -Y — see navigation light convention: PORT is
+        // always LEFT (red) and STARBOARD is always RIGHT (green) facing forward), keel Z=0, deck Z=Depth.
         private Point3D _bowLabelPosition;
         public Point3D BowLabelPosition
         {
@@ -217,8 +222,8 @@ namespace NavalArchitectureSuite.ViewModels
             double halfBeam = Breadth / 2.0;
             BowLabelPosition = new Point3D(Lpp, 0, Depth * 1.15);
             SternLabelPosition = new Point3D(0, 0, Depth * 1.15);
-            PortLabelPosition = new Point3D(Lpp / 2.0, -halfBeam * 1.3, Depth);
-            StarboardLabelPosition = new Point3D(Lpp / 2.0, halfBeam * 1.3, Depth);
+            PortLabelPosition = new Point3D(Lpp / 2.0, halfBeam * 1.8, Depth);
+            StarboardLabelPosition = new Point3D(Lpp / 2.0, -halfBeam * 1.8, Depth);
         }
 
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

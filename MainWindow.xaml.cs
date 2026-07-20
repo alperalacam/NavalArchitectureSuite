@@ -14,9 +14,10 @@ namespace NavalArchitectureSuite
     {
         private readonly Dictionary<string, NavItem> _navItems = BuildNavItems();
 
-        // Reports needs to read live figures out of these four modules for its PDF export,
-        // so (unlike the other modules) they are created once and kept alive for the session
-        // rather than being recreated with `new` on every nav click.
+        // All primary module views are created once and kept alive so that:
+        // (a) the ShipBuilder singleton feeds every module without re-instantiation, and
+        // (b) Reports can read live figures from Hydrostatics, Stability, Resistance, Machinery.
+        private readonly ShipBuilderView _shipBuilderView = new();
         private readonly HydrostaticsView _hydrostaticsView = new();
         private readonly StabilityView _stabilityView = new();
         private readonly ResistancePropulsionView _resistanceView = new();
@@ -117,7 +118,7 @@ namespace NavalArchitectureSuite
         {
             if (key == "ShipBuilder")
             {
-                ContentFrame.Content = new ShipBuilderView();
+                ContentFrame.Content = _shipBuilderView;
                 return;
             }
 
