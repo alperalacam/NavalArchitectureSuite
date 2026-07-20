@@ -229,7 +229,31 @@
                             <TextBlock Text="Power &amp; Engine Selection" Style="{StaticResource SectionTitleStyle}"/>
 
                             <TextBlock Text="Selected Engine Model" Style="{StaticResource InputLabelStyle}"/>
-                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding EngineModel, UpdateSourceTrigger=PropertyChanged}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:MachineryViewModel.EngineList}"
+                                      SelectedItem="{Binding SelectedEngine, Mode=TwoWay}"
+                                      DisplayMemberPath="DisplayName"
+                                      MaxDropDownHeight="320"
+                                      ToolTip="Select an engine to auto-fill MCR, SFOC and RPM — or leave blank for manual entry"/>
+
+                            <!-- Engine info card (visible when an engine is selected) -->
+                            <Border Margin="0,8,0,0" Padding="10,8" CornerRadius="4"
+                                    Background="#0A1F3D" BorderBrush="#24467F" BorderThickness="1"
+                                    Visibility="{Binding SelectedEngine, Converter={x:Static local:NullToVisibilityConverter.Instance}}">
+                                <StackPanel>
+                                    <TextBlock Foreground="#C8960C" FontSize="11" FontWeight="SemiBold"
+                                               Text="{Binding SelectedEngine.Category}"/>
+                                    <TextBlock Foreground="#D7E1F0" FontSize="11" TextWrapping="Wrap" Margin="0,3,0,0"
+                                               Text="{Binding SelectedEngine.Notes}"/>
+                                    <TextBlock Foreground="#8FA6C9" FontSize="10.5" Margin="0,4,0,0"
+                                               Text="{Binding SelectedEngine.Cylinders, StringFormat='Cylinders: {0}'}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="Or type a custom engine name below" Style="{StaticResource InputLabelStyle}"
+                                       Margin="0,8,0,4" Opacity="0.7" FontSize="10.5"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding EngineModel, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="Overrides the selected engine name in reports"/>
 
                             <TextBlock Text="Required Power at Propeller (kW)" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding RequiredPower, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>

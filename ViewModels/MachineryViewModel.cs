@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using NavalArchitectureSuite.Models;
+using NavalArchitectureSuite.Services;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -82,6 +86,52 @@ namespace NavalArchitectureSuite.ViewModels
 
         // CF, t-CO2 / t-fuel, MEPC.212(63)/245(66)
         private static readonly double[] FuelCarbonFactor = { 3.114, 3.206, 2.750 };
+
+        #region Engine selector
+
+        /// <summary>Flat list of all engines for the ComboBox, with a blank "Manual entry" at top.</summary>
+        public static IReadOnlyList<MarineEngine> EngineList { get; } = MarineEngineDatabase.Engines;
+
+        /// <summary>Category groups for grouped display.</summary>
+        public static IReadOnlyList<string> EngineCategories { get; } =
+            MarineEngineDatabase.Engines.Select(e => e.Category).Distinct().ToList();
+
+        private MarineEngine? _selectedEngine;
+        public MarineEngine? SelectedEngine
+        {
+            get => _selectedEngine;
+            set
+            {
+                if (SetField(ref _selectedEngine, value) && value is not null)
+                    ApplyEnginePreset(value);
+            }
+        }
+
+        private void ApplyEnginePreset(MarineEngine eng)
+        {
+            // Auto-fill all related input fields from the selected engine.
+            _engineModel    = eng.DisplayName;
+            _sfocAt100      = eng.SfocAt100;
+            _sfocMin        = eng.SfocMin;
+            _loadAtMinSfoc  = eng.LoadAtMinSfoc;
+            _ratedEngineSpeed = eng.RatedRpm;
+
+            // Set MCR from engine rating and back-calculate RequiredPower
+            // so the user sees the engine's actual MCR immediately.
+            _requiredPower = eng.McrKw * (1.0 - Math.Clamp(EngineMargin, 0, 90) / 100.0)
+                                       / (1.0 + Math.Clamp(SeaMargin,   0, 50) / 100.0);
+
+            OnPropertyChanged(nameof(EngineModel));
+            OnPropertyChanged(nameof(SfocAt100));
+            OnPropertyChanged(nameof(SfocMin));
+            OnPropertyChanged(nameof(LoadAtMinSfoc));
+            OnPropertyChanged(nameof(RatedEngineSpeed));
+            OnPropertyChanged(nameof(RequiredPower));
+
+            Recalculate();
+        }
+
+        #endregion
 
         #region Inputs — Power & Engine Selection
 
