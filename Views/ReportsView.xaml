@@ -412,6 +412,47 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- PDF Section selector -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="PDF Sections to Include" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Foreground="#8FA6C9" FontSize="11" Margin="0,0,0,10" TextWrapping="Wrap"
+                                       Text="Tick the sections you want printed in the exported PDF. Title block is always included."/>
+                            <UniformGrid Columns="2" Margin="0,4,0,0">
+                                <CheckBox Content="Ship Builder — Principal Particulars"
+                                          IsChecked="{Binding IncludeShipBuilder}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Hydrostatics — KB, KM, BM, GM"
+                                          IsChecked="{Binding IncludeHydrostatics}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Stability — GZ Curve &amp; IMO Criteria"
+                                          IsChecked="{Binding IncludeStability}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Resistance &amp; Propulsion — EHP/BHP"
+                                          IsChecked="{Binding IncludeResistance}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Machinery — Engine, EEDI, NOx"
+                                          IsChecked="{Binding IncludeMachinery}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Damage Stability — SOLAS Summary"
+                                          IsChecked="{Binding IncludeDamageStability}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Welding — Joint Design Summary"
+                                          IsChecked="{Binding IncludeWelding}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Tonnage &amp; Freeboard — ITC/ILLC"
+                                          IsChecked="{Binding IncludeTonnage}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Yacht Design — VPP Polar"
+                                          IsChecked="{Binding IncludeYachtDesign}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Manoeuvring — Turning Circle &amp; Zig-Zag"
+                                          IsChecked="{Binding IncludeManoeuvring}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Formula library audit -->
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                         <StackPanel>

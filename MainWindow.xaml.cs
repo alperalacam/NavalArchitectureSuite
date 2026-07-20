@@ -22,6 +22,9 @@ namespace NavalArchitectureSuite
         private readonly StabilityView _stabilityView = new();
         private readonly ResistancePropulsionView _resistanceView = new();
         private readonly MachineryView _machineryView = new();
+        private readonly DamageStabilityView _damageStabilityView = new();
+        private readonly YachtDesignView _yachtDesignView = new();
+        private readonly ManoeuvringView _manoeuvringView = new();
         private readonly ReportsView _reportsView;
 
         public MainWindow()
@@ -31,10 +34,13 @@ namespace NavalArchitectureSuite
 
             _reportsView = new ReportsView();
             var reportsViewModel = (ReportsViewModel)_reportsView.DataContext;
-            reportsViewModel.HydrostaticsSource = (HydrostaticsViewModel)_hydrostaticsView.DataContext;
-            reportsViewModel.StabilitySource = (StabilityViewModel)_stabilityView.DataContext;
-            reportsViewModel.ResistanceSource = (ResistancePropulsionViewModel)_resistanceView.DataContext;
-            reportsViewModel.MachinerySource = (MachineryViewModel)_machineryView.DataContext;
+            reportsViewModel.HydrostaticsSource    = (HydrostaticsViewModel)_hydrostaticsView.DataContext;
+            reportsViewModel.StabilitySource       = (StabilityViewModel)_stabilityView.DataContext;
+            reportsViewModel.ResistanceSource      = (ResistancePropulsionViewModel)_resistanceView.DataContext;
+            reportsViewModel.MachinerySource       = (MachineryViewModel)_machineryView.DataContext;
+            reportsViewModel.DamageStabilitySource = (DamageStabilityViewModel)_damageStabilityView.DataContext;
+            reportsViewModel.YachtDesignSource     = (YachtDesignViewModel)_yachtDesignView.DataContext;
+            reportsViewModel.ManoeuvringSource     = (ManoeuvringViewModel)_manoeuvringView.DataContext;
 
             RestoreWindowBounds();
             ClampToWorkArea();

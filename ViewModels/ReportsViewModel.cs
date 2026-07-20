@@ -39,6 +39,15 @@ namespace NavalArchitectureSuite.ViewModels
         /// <summary>Live reference to the Machinery module, set by MainWindow. May be null if not yet wired.</summary>
         public MachineryViewModel? MachinerySource { get; set; }
 
+        /// <summary>Live reference to the Damage Stability module, set by MainWindow.</summary>
+        public DamageStabilityViewModel? DamageStabilitySource { get; set; }
+
+        /// <summary>Live reference to the Yacht Design module, set by MainWindow.</summary>
+        public YachtDesignViewModel? YachtDesignSource { get; set; }
+
+        /// <summary>Live reference to the Manoeuvring module, set by MainWindow.</summary>
+        public ManoeuvringViewModel? ManoeuvringSource { get; set; }
+
         #region Project title block
 
         private string _projectName = "MV Example Bulk Carrier — Newbuild 4201";
@@ -127,6 +136,40 @@ namespace NavalArchitectureSuite.ViewModels
 
         #endregion
 
+        #region PDF Section toggles
+
+        private bool _includeShipBuilder = true;
+        public bool IncludeShipBuilder { get => _includeShipBuilder; set => SetField(ref _includeShipBuilder, value); }
+
+        private bool _includeHydrostatics = true;
+        public bool IncludeHydrostatics { get => _includeHydrostatics; set => SetField(ref _includeHydrostatics, value); }
+
+        private bool _includeStability = true;
+        public bool IncludeStability { get => _includeStability; set => SetField(ref _includeStability, value); }
+
+        private bool _includeResistance = true;
+        public bool IncludeResistance { get => _includeResistance; set => SetField(ref _includeResistance, value); }
+
+        private bool _includeMachinery = true;
+        public bool IncludeMachinery { get => _includeMachinery; set => SetField(ref _includeMachinery, value); }
+
+        private bool _includeDamageStability = true;
+        public bool IncludeDamageStability { get => _includeDamageStability; set => SetField(ref _includeDamageStability, value); }
+
+        private bool _includeWelding = true;
+        public bool IncludeWelding { get => _includeWelding; set => SetField(ref _includeWelding, value); }
+
+        private bool _includeTonnage = true;
+        public bool IncludeTonnage { get => _includeTonnage; set => SetField(ref _includeTonnage, value); }
+
+        private bool _includeYachtDesign = true;
+        public bool IncludeYachtDesign { get => _includeYachtDesign; set => SetField(ref _includeYachtDesign, value); }
+
+        private bool _includeManoeuvring = true;
+        public bool IncludeManoeuvring { get => _includeManoeuvring; set => SetField(ref _includeManoeuvring, value); }
+
+        #endregion
+
         #region Export summary stat tile
 
         private int _includedCount;
@@ -205,6 +248,7 @@ namespace NavalArchitectureSuite.ViewModels
         {
             var doc = new SimplePdfDocument();
 
+            // Title block — always included.
             doc.AddLine(ProjectName, size: 16, bold: true);
             doc.AddSpacer(10);
             doc.AddLine($"Project Number: {ProjectNumber}");
@@ -214,10 +258,34 @@ namespace NavalArchitectureSuite.ViewModels
             doc.AddLine($"Export Date: {DateTime.Now:yyyy-MM-dd HH:mm}");
             doc.AddSpacer(14);
 
-            AddStabilitySection(doc);
-            AddHydrostaticsSection(doc);
-            AddResistanceSection(doc);
-            AddMachinerySection(doc);
+            var sb = ShipBuilderViewModel.Instance;
+            if (IncludeShipBuilder)
+            {
+                doc.AddLine("SHIP BUILDER — PRINCIPAL PARTICULARS", size: 13, bold: true);
+                doc.AddSpacer(6);
+                doc.AddTwoColumn("Vessel Type",   sb.VesselType,                    totalChars: 40, size: 9);
+                doc.AddTwoColumn("Lpp",           $"{sb.Lpp:F2} m",                 totalChars: 40, size: 9);
+                doc.AddTwoColumn("Breadth (B)",   $"{sb.Breadth:F2} m",             totalChars: 40, size: 9);
+                doc.AddTwoColumn("Depth (D)",     $"{sb.Depth:F2} m",               totalChars: 40, size: 9);
+                doc.AddTwoColumn("Draft (T)",     $"{sb.Draft:F2} m",               totalChars: 40, size: 9);
+                doc.AddTwoColumn("Cb",            $"{sb.Cb:F3}",                    totalChars: 40, size: 9);
+                doc.AddTwoColumn("Displacement",  $"{sb.Displacement:N1} t",        totalChars: 40, size: 9);
+                doc.AddTwoColumn("Design Speed",  $"{sb.DesignSpeed:F1} kn",        totalChars: 40, size: 9);
+                doc.AddTwoColumn("Froude Number", $"{sb.FroudeNumber:F4}",           totalChars: 40, size: 9);
+                doc.AddSpacer(10);
+                doc.AddRule();
+                doc.AddSpacer(10);
+            }
+
+            if (IncludeHydrostatics)   AddHydrostaticsSection(doc);
+            if (IncludeStability)      AddStabilitySection(doc);
+            if (IncludeResistance)     AddResistanceSection(doc);
+            if (IncludeMachinery)      AddMachinerySection(doc);
+            if (IncludeDamageStability) AddDamageStabilitySection(doc);
+            if (IncludeWelding)        AddWeldingSection(doc);
+            if (IncludeTonnage)        AddTonnageSection(doc);
+            if (IncludeYachtDesign)    AddYachtDesignSection(doc);
+            if (IncludeManoeuvring)    AddManoeuvringSection(doc);
 
             doc.AddSpacer(16);
             doc.AddLine("Generated by Naval Architecture Engineering Suite", size: 8);
@@ -259,6 +327,12 @@ namespace NavalArchitectureSuite.ViewModels
             doc.AddTwoColumn("Angle of Max GZ (>= 25 deg)", $"{stab.MaxGzAngle:F1} deg  {PassFail(stab.MaxGzAngle >= 25.0)}", totalChars: 56, size: 9);
             doc.AddTwoColumn("Range of Positive Stability (>= 15 deg)", $"{stab.RangeOfPositiveStability:F1} deg  {PassFail(stab.RangeOfPositiveStability >= 15.0)}", totalChars: 56, size: 9);
 
+            doc.AddSpacer(8);
+            doc.AddLine("GZ Curve (Stability)", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngS = ChartImageRenderer.RenderToPng(stab.GzPlotModel, 800, 380);
+            doc.AddImage(pngS);
+
             doc.AddSpacer(10);
             doc.AddRule();
             doc.AddSpacer(10);
@@ -279,12 +353,19 @@ namespace NavalArchitectureSuite.ViewModels
                 return;
             }
 
-            doc.AddTwoColumn("Displacement", $"{hydro.Displacement:F1} t", totalChars: 40, size: 9);
-            doc.AddTwoColumn("Draft", $"{hydro.DraftT:F3} m", totalChars: 40, size: 9);
-            doc.AddTwoColumn("KB", $"{hydro.Kb:F3} m", totalChars: 40, size: 9);
-            doc.AddTwoColumn("KM", $"{hydro.Km:F3} m", totalChars: 40, size: 9);
-            doc.AddTwoColumn("BM", $"{hydro.Bm:F3} m", totalChars: 40, size: 9);
-            doc.AddTwoColumn("GM", $"{hydro.Gm:F3} m", totalChars: 40, size: 9);
+            doc.AddTwoColumn("Displacement", $"{hydro.Displacement:F1} t",  totalChars: 40, size: 9);
+            doc.AddTwoColumn("Draft",        $"{hydro.DraftT:F3} m",         totalChars: 40, size: 9);
+            doc.AddTwoColumn("KB",           $"{hydro.Kb:F3} m",             totalChars: 40, size: 9);
+            doc.AddTwoColumn("KM",           $"{hydro.Km:F3} m",             totalChars: 40, size: 9);
+            doc.AddTwoColumn("BM",           $"{hydro.Bm:F3} m",             totalChars: 40, size: 9);
+            doc.AddTwoColumn("GM",           $"{hydro.Gm:F3} m",             totalChars: 40, size: 9);
+            doc.AddSpacer(8);
+
+            // GZ Curve chart
+            doc.AddLine("GZ Curve (Hydrostatics)", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngH = ChartImageRenderer.RenderToPng(hydro.GzPlotModel, 800, 380);
+            doc.AddImage(pngH);
 
             doc.AddSpacer(10);
             doc.AddRule();
@@ -306,9 +387,17 @@ namespace NavalArchitectureSuite.ViewModels
                 return;
             }
 
-            doc.AddTwoColumn("Design Speed", $"{res.SpeedMax:F1} kn", totalChars: 40, size: 9);
-            doc.AddTwoColumn("Total Resistance (Rt)", $"{res.RtDesign:F1} kN", totalChars: 40, size: 9);
-            doc.AddTwoColumn("Effective Power (EHP)", $"{res.Ehp:F1} kW", totalChars: 40, size: 9);
+            doc.AddTwoColumn("Design Speed",          $"{res.SpeedMax:F1} kn",    totalChars: 40, size: 9);
+            doc.AddTwoColumn("Total Resistance (Rt)",  $"{res.RtDesign:F1} kN",   totalChars: 40, size: 9);
+            doc.AddTwoColumn("Effective Power (EHP)",  $"{res.Ehp:F1} kW",        totalChars: 40, size: 9);
+            doc.AddTwoColumn("Delivered Power (DHP)",  $"{res.Dhp:F1} kW",        totalChars: 40, size: 9);
+            doc.AddTwoColumn("Brake Power (BHP)",      $"{res.Bhp:F1} kW",        totalChars: 40, size: 9);
+            doc.AddSpacer(8);
+
+            doc.AddLine("Resistance Curve (Holtrop-Mennen)", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngR = ChartImageRenderer.RenderToPng(res.ResistancePlotModel, 800, 380);
+            doc.AddImage(pngR);
 
             doc.AddSpacer(10);
             doc.AddRule();
@@ -338,9 +427,129 @@ namespace NavalArchitectureSuite.ViewModels
             doc.AddTwoColumn("SFOC at CSR", $"{csrRow?.SfocGPerKwh ?? 0.0:F1} g/kWh", totalChars: 56, size: 9);
             doc.AddSpacer(2);
             doc.AddTwoColumn("Daily Fuel Consumption at CSR", $"{csrRow?.DailyFuelTonnes ?? 0.0:F2} t/day", totalChars: 56, size: 9);
-            doc.AddTwoColumn("Attained EEDI", $"{mc.AttainedEedi:F3}", totalChars: 40, size: 9);
-            doc.AddTwoColumn("NOx Tier Compliance", $"{mc.ApplicableTier} — {mc.NoxComplianceText}", totalChars: 40, size: 9);
+            doc.AddTwoColumn("Attained EEDI",         $"{mc.AttainedEedi:F3}",                                   totalChars: 40, size: 9);
+            doc.AddTwoColumn("NOx Tier Compliance",    $"{mc.ApplicableTier} — {mc.NoxComplianceText}",          totalChars: 40, size: 9);
+            doc.AddSpacer(8);
 
+            doc.AddLine("SFOC Curve vs Load", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngM = ChartImageRenderer.RenderToPng(mc.SfocPlotModel, 800, 380);
+            doc.AddImage(pngM);
+
+            doc.AddSpacer(10);
+            doc.AddRule();
+            doc.AddSpacer(10);
+        }
+
+        private void AddDamageStabilitySection(SimplePdfDocument doc)
+        {
+            doc.AddLine("DAMAGE STABILITY SUMMARY", size: 13, bold: true);
+            doc.AddSpacer(6);
+
+            var ds = DamageStabilitySource;
+            if (ds is null)
+            {
+                doc.AddLine("Damage Stability module data not available.", size: 9);
+                doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+                return;
+            }
+
+            doc.AddLine("Method: Lost buoyancy (SOLAS II-1, simplified teaching model)", size: 9);
+            doc.AddSpacer(4);
+            doc.AddTwoColumn("Selected Case",       ds.SelectedCase?.Name ?? "(none)",          totalChars: 56, size: 9);
+            doc.AddTwoColumn("Damaged Draft",       $"{ds.DamagedDraftTd:F3} m",                totalChars: 40, size: 9);
+            doc.AddTwoColumn("Sinkage",             $"{ds.Sinkage:F3} m",                       totalChars: 40, size: 9);
+            doc.AddTwoColumn("GM (damaged)",        $"{ds.GmDamaged:F3} m",                     totalChars: 40, size: 9);
+            doc.AddTwoColumn("Max GZ (residual)",   $"{ds.MaxGz:F3} m",                         totalChars: 40, size: 9);
+            doc.AddTwoColumn("Attained Index A",    $"{ds.AttainedIndex:F4}",                   totalChars: 40, size: 9);
+            doc.AddTwoColumn("Required Index R",    $"{ds.RequiredIndex:F4}",                   totalChars: 40, size: 9);
+            doc.AddTwoColumn("Subdivision",         ds.AttainedIndexPass ? "PASS" : "FAIL",     totalChars: 40, size: 9);
+            doc.AddSpacer(8);
+
+            doc.AddLine("Residual GZ Curve (Selected Damage Case)", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngDs = ChartImageRenderer.RenderToPng(ds.GzPlotModel, 800, 360);
+            doc.AddImage(pngDs);
+
+            doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+        }
+
+        private void AddYachtDesignSection(SimplePdfDocument doc)
+        {
+            doc.AddLine("YACHT DESIGN SUMMARY", size: 13, bold: true);
+            doc.AddSpacer(6);
+
+            var yd = YachtDesignSource;
+            if (yd is null)
+            {
+                doc.AddLine("Yacht Design module data not available.", size: 9);
+                doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+                return;
+            }
+
+            doc.AddTwoColumn("Displacement/Length Ratio",  $"{yd.Dlr:F1}",               totalChars: 40, size: 9);
+            doc.AddTwoColumn("Sail Area/Displacement Ratio",$"{yd.Sadr:F2}",              totalChars: 40, size: 9);
+            doc.AddTwoColumn("Capsize Screening Formula",  $"{yd.Csf:F2}",               totalChars: 40, size: 9);
+            doc.AddTwoColumn("Comfort Ratio",              $"{yd.ComfortRatio:F1} ({yd.ComfortBand})", totalChars: 56, size: 9);
+            doc.AddTwoColumn("Hull Speed",                 $"{yd.HullSpeedKts:F2} kts",  totalChars: 40, size: 9);
+            doc.AddTwoColumn("Dellenbaugh Angle",          $"{yd.DellenbaughAngleDeg:F1} deg", totalChars: 40, size: 9);
+            doc.AddSpacer(8);
+
+            doc.AddLine("VPP Speed Polar", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngYd = ChartImageRenderer.RenderToPng(yd.PolarPlotModel, 800, 360);
+            doc.AddImage(pngYd);
+
+            doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+        }
+
+        private void AddManoeuvringSection(SimplePdfDocument doc)
+        {
+            doc.AddLine("MANOEUVRING SUMMARY", size: 13, bold: true);
+            doc.AddSpacer(6);
+
+            var mn = ManoeuvringSource;
+            if (mn is null)
+            {
+                doc.AddLine("Manoeuvring module data not available.", size: 9);
+                doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+                return;
+            }
+
+            doc.AddTwoColumn("Advance",                $"{mn.Advance:F1} m",                    totalChars: 40, size: 9);
+            doc.AddTwoColumn("Tactical Diameter",      $"{mn.TacticalDiameter:F1} m",           totalChars: 40, size: 9);
+            doc.AddTwoColumn("Steady Turning Diameter",$"{mn.SteadyTurningDiameter:F1} m",      totalChars: 40, size: 9);
+            doc.AddTwoColumn("First Overshoot Angle",  $"{mn.FirstOvershootAngleDeg:F1} deg",   totalChars: 40, size: 9);
+            doc.AddSpacer(8);
+
+            doc.AddLine("Turning Circle Trajectory", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngTc = ChartImageRenderer.RenderToPng(mn.TurningCirclePlotModel, 800, 360);
+            doc.AddImage(pngTc);
+
+            doc.AddSpacer(8);
+            doc.AddLine("Zig-Zag Manoeuvre", size: 10, bold: true);
+            doc.AddSpacer(4);
+            var pngZz = ChartImageRenderer.RenderToPng(mn.ZigZagPlotModel, 800, 360);
+            doc.AddImage(pngZz);
+
+            doc.AddSpacer(10); doc.AddRule(); doc.AddSpacer(10);
+        }
+        private void AddWeldingSection(SimplePdfDocument doc)
+        {
+            doc.AddLine("WELDING — JOINT DESIGN SUMMARY", size: 13, bold: true);
+            doc.AddSpacer(6);
+            doc.AddLine("Refer to Welding module for joint sizing, heat input and WPS reference.", size: 9);
+            doc.AddSpacer(10);
+            doc.AddRule();
+            doc.AddSpacer(10);
+        }
+
+        private void AddTonnageSection(SimplePdfDocument doc)
+        {
+            doc.AddLine("TONNAGE AND FREEBOARD SUMMARY", size: 13, bold: true);
+            doc.AddSpacer(6);
+            doc.AddLine("Refer to Tonnage and Freeboard module for ITC 1969 GT/NT and ILLC 1966 freeboard results.", size: 9);
             doc.AddSpacer(10);
             doc.AddRule();
             doc.AddSpacer(10);
