@@ -242,6 +242,28 @@ namespace NavalArchitectureSuite.ViewModels
         public MachineryViewModel()
         {
             SfocPlotModel = BuildPlotModel();
+
+            // Subscribe to the shared ShipBuilder singleton so that changing the design
+            // speed in Ship Builder immediately updates Machinery's speed input.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.DesignSpeed):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _shipSpeed = sb.DesignSpeed;
+
+            OnPropertyChanged(nameof(ShipSpeed));
+
             Recalculate();
         }
 

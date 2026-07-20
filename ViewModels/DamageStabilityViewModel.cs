@@ -217,8 +217,51 @@ namespace NavalArchitectureSuite.ViewModels
         public DamageStabilityViewModel()
         {
             GzPlotModel = BuildPlotModel();
+
+            // Sync hull particulars from Ship Builder first so the default damage
+            // cases below are seeded against the correct Lpp.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.Lpp):
+                    case nameof(ShipBuilderViewModel.Breadth):
+                    case nameof(ShipBuilderViewModel.Depth):
+                    case nameof(ShipBuilderViewModel.Draft):
+                    case nameof(ShipBuilderViewModel.Cb):
+                    case nameof(ShipBuilderViewModel.Cwp):
+                    case nameof(ShipBuilderViewModel.Displacement):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+
             SeedDefaultCases();
             SelectedCase = DamageCases.Count > 0 ? DamageCases[0] : null;
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _lpp = sb.Lpp;
+            _bwl = sb.Breadth;
+            _depth = sb.Depth;
+            _intactDraftT = sb.Draft;
+            _cb = sb.Cb;
+            _cwp = sb.Cwp;
+            _displacement = sb.Displacement;
+
+            // Fire property-changed for all synced inputs so the UI reflects the new values.
+            OnPropertyChanged(nameof(Lpp));
+            OnPropertyChanged(nameof(Bwl));
+            OnPropertyChanged(nameof(Depth));
+            OnPropertyChanged(nameof(IntactDraftT));
+            OnPropertyChanged(nameof(Cb));
+            OnPropertyChanged(nameof(Cwp));
+            OnPropertyChanged(nameof(Displacement));
+
+            Recalculate();
         }
 
         private void SeedDefaultCases()

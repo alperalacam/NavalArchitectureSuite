@@ -187,6 +187,45 @@ namespace NavalArchitectureSuite.ViewModels
 
         public TonnageFreeboardViewModel()
         {
+            // Subscribe to the shared ShipBuilder singleton so that changing principal
+            // particulars in Ship Builder immediately updates Tonnage/Freeboard inputs.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.Lpp):
+                    case nameof(ShipBuilderViewModel.Breadth):
+                    case nameof(ShipBuilderViewModel.Depth):
+                    case nameof(ShipBuilderViewModel.Draft):
+                    case nameof(ShipBuilderViewModel.Cb):
+                    case nameof(ShipBuilderViewModel.Displacement):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _lfb = sb.Lpp;               // Ship Builder Lpp maps to freeboard length
+            _bfb = sb.Breadth;           // freeboard beam
+            _freeboardDepthD = sb.Depth;
+            _mouldedDepth = sb.Depth;
+            _summerDraft = sb.Draft;
+            _cbFb = sb.Cb;
+            _summerDisplacement = sb.Displacement;
+
+            // Fire property-changed for all synced inputs so the UI reflects the new values.
+            OnPropertyChanged(nameof(Lfb));
+            OnPropertyChanged(nameof(Bfb));
+            OnPropertyChanged(nameof(FreeboardDepth_D));
+            OnPropertyChanged(nameof(MouldedDepth_D));
+            OnPropertyChanged(nameof(SummerDraft_d));
+            OnPropertyChanged(nameof(Cb_fb));
+            OnPropertyChanged(nameof(SummerDisplacement_t));
+
             Recalculate();
         }
 

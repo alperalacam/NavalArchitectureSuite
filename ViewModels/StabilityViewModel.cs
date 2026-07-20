@@ -268,6 +268,39 @@ namespace NavalArchitectureSuite.ViewModels
             GzPlotModel = BuildPlotModel();
             SeedDefaultConditions();
             SelectedCondition = LoadingConditions.Count > 0 ? LoadingConditions[0] : null;
+
+            // Subscribe to the shared ShipBuilder singleton so that changing principal
+            // particulars in Ship Builder immediately updates Stability's hull-form inputs.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.Lpp):
+                    case nameof(ShipBuilderViewModel.Breadth):
+                    case nameof(ShipBuilderViewModel.Cb):
+                    case nameof(ShipBuilderViewModel.Cwp):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _lwl = sb.Lpp;   // Ship Builder Lpp maps to Stability's Lwl
+            _bwl = sb.Breadth;
+            _cb  = sb.Cb;
+            _cwp = sb.Cwp;
+
+            // Fire property-changed for all synced inputs so the UI reflects the new values.
+            OnPropertyChanged(nameof(Lwl));
+            OnPropertyChanged(nameof(Bwl));
+            OnPropertyChanged(nameof(Cb));
+            OnPropertyChanged(nameof(Cwp));
+
+            Recalculate();
         }
 
         private void SeedDefaultConditions()

@@ -118,6 +118,50 @@ namespace NavalArchitectureSuite.ViewModels
         public HydrostaticsViewModel()
         {
             GzPlotModel = BuildPlotModel();
+
+            // Subscribe to the shared ShipBuilder singleton so that changing principal
+            // particulars in Ship Builder immediately updates Hydrostatics inputs.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.Lpp):
+                    case nameof(ShipBuilderViewModel.Breadth):
+                    case nameof(ShipBuilderViewModel.Depth):
+                    case nameof(ShipBuilderViewModel.Draft):
+                    case nameof(ShipBuilderViewModel.Cb):
+                    case nameof(ShipBuilderViewModel.Cm):
+                    case nameof(ShipBuilderViewModel.Cwp):
+                    case nameof(ShipBuilderViewModel.Displacement):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _lwl  = sb.Lpp;         // Ship Builder Lpp maps to Hydrostatics Lwl
+            _bwl  = sb.Breadth;
+            _depth = sb.Depth;
+            // Draft: HydrostaticsViewModel derives DraftT internally from Displacement/Cb/L/B
+            // but the Kb input is independent; we keep Displacement in sync.
+            _cb   = sb.Cb;
+            _cm   = sb.Cm;
+            _cwp  = sb.Cwp;
+            _displacement = sb.Displacement;
+
+            // Fire property-changed for all synced inputs so the UI reflects the new values.
+            OnPropertyChanged(nameof(Lwl));
+            OnPropertyChanged(nameof(Bwl));
+            OnPropertyChanged(nameof(Depth));
+            OnPropertyChanged(nameof(Cb));
+            OnPropertyChanged(nameof(Cm));
+            OnPropertyChanged(nameof(Cwp));
+            OnPropertyChanged(nameof(Displacement));
+
             Recalculate();
         }
 

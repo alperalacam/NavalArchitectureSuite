@@ -123,6 +123,41 @@ namespace NavalArchitectureSuite.ViewModels
         {
             TurningCirclePlotModel = BuildTurningCirclePlotModel();
             ZigZagPlotModel = BuildZigZagPlotModel();
+
+            // Subscribe to the shared ShipBuilder singleton so that changing principal
+            // particulars in Ship Builder immediately updates Manoeuvring inputs.
+            SyncFromShipBuilder();
+            ShipBuilderViewModel.Instance.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(ShipBuilderViewModel.Lpp):
+                    case nameof(ShipBuilderViewModel.Breadth):
+                    case nameof(ShipBuilderViewModel.Draft):
+                    case nameof(ShipBuilderViewModel.Cb):
+                    case nameof(ShipBuilderViewModel.DesignSpeed):
+                        SyncFromShipBuilder();
+                        break;
+                }
+            };
+        }
+
+        private void SyncFromShipBuilder()
+        {
+            var sb = ShipBuilderViewModel.Instance;
+            _lpp = sb.Lpp;
+            _bwl = sb.Breadth;
+            _draft = sb.Draft;
+            _cb = sb.Cb;
+            _serviceSpeedKts = sb.DesignSpeed;
+
+            // Fire property-changed for all synced inputs so the UI reflects the new values.
+            OnPropertyChanged(nameof(Lpp));
+            OnPropertyChanged(nameof(Bwl));
+            OnPropertyChanged(nameof(Draft));
+            OnPropertyChanged(nameof(Cb));
+            OnPropertyChanged(nameof(ServiceSpeedKts));
+
             Recalculate();
         }
 
