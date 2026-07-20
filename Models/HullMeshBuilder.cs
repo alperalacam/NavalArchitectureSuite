@@ -6,20 +6,27 @@ namespace NavalArchitectureSuite.Models
 {
     /// <summary>
     /// Generates a simplified parametric hull shell for the Ship Builder 3D preview.
-    /// This is a visualization aid, not a faired lines plan: the longitudinal plan-view
-    /// shape is a cosine-eased entrance / parallel-body / run distribution sized from Cwp
-    /// (fuller Cwp -&gt; longer parallel middle body), and each station's cross-section is a
-    /// power-law "bilge" curve from keel to the design waterline (wall-sided above it),
-    /// with the exponent driven by Cm (fuller Cm -&gt; boxier section, closer to the deck
-    /// edge width all the way down). The bow tapers to near a point (stem); the stern
-    /// keeps a small transom width. Cb is not modelled directly (it falls out loosely of
-    /// the Cwp/Cm shaping) — this trades hydrostatic-offset accuracy for a fast, always-
-    /// valid, live-updating preview mesh.
+    /// Stern is at X=0, bow at X=Lpp, centerline at Y=0, keel at Z=0, deck at Z=Depth
+    /// (rising toward the ends per the sheer envelope). Beam and depth (sheer) both vary
+    /// along the length through a shared Lackenby-style envelope: a flat parallel middle
+    /// body (sized from Cwp) flanked by cosine-eased entrance and run curves, narrowing to
+    /// a near-point bow and a transom stern for beam, and rising toward both ends for sheer.
+    /// Each station's underwater cross-section is a power-law bilge curve from keel to the
+    /// design waterline (wall-sided above it up to the local deck height), with the exponent
+    /// driven by Cm (fuller Cm -&gt; boxier section). Cb is not modelled directly.
     /// </summary>
     public static class HullMeshBuilder
     {
         private const int Stations = 41;
         private const int HalfPoints = 14; // sample points from deck edge to keel, per side
+
+        // Beam envelope: half-beam at the stern/bow as a fraction of the parallel-body half-beam.
+        private const double SternBeamRatio = 0.15;
+        private const double BowBeamRatio = 0.02;
+
+        // Sheer envelope: deck height at the stern/bow as a fraction of the molded depth amidships.
+        private const double SternSheerRatio = 1.08;
+        private const double BowSheerRatio = 1.18;
 
         public static Model3DGroup BuildHull(double lpp, double beam, double depth, double draft, double cb, double cm, double cwp)
         {
@@ -38,23 +45,28 @@ namespace NavalArchitectureSuite.Models
             double halfBeamMax = beam / 2.0;
             double exponent = 2.0 + 6.0 * (1.0 - cm); // fuller Cm -> section closer to rectangular
 
+            // Parallel middle body sized from Cwp; the remainder splits evenly into an eased
+            // entrance (forward) and run (aft).
             double parallelBodyFrac = Math.Clamp(2.0 * cwp - 1.0, 0.0, 0.7);
             double taperFrac = (1.0 - parallelBodyFrac) / 2.0;
-            const double sternMinRatio = 0.15;
-            const double bowMinRatio = 0.02;
+            double parallelStart = taperFrac;
+            double parallelEnd = 1.0 - taperFrac;
 
-            double EnvelopeRatio(double xn)
+            // Lackenby-style envelope: 1.0 across the parallel middle body, cosine-eased down
+            // (or up) to the given end ratios over the aft run and forward entrance.
+            double LackenbyEnvelope(double xn, double sternRatio, double bowRatio)
             {
-                if (taperFrac <= 0.0) return 1.0;
-                if (xn < taperFrac)
+                if (xn <= parallelStart)
                 {
-                    double t = xn / taperFrac;
-                    return sternMinRatio + (1.0 - sternMinRatio) * 0.5 * (1.0 - Math.Cos(Math.PI * t));
+                    double t = parallelStart > 0.0 ? xn / parallelStart : 1.0;
+                    double eased = 0.5 * (1.0 - Math.Cos(Math.PI * t));
+                    return sternRatio + (1.0 - sternRatio) * eased;
                 }
-                if (xn > 1.0 - taperFrac)
+                if (xn >= parallelEnd)
                 {
-                    double t = (xn - (1.0 - taperFrac)) / taperFrac;
-                    return 1.0 - (1.0 - bowMinRatio) * 0.5 * (1.0 - Math.Cos(Math.PI * t));
+                    double t = parallelEnd < 1.0 ? (xn - parallelEnd) / (1.0 - parallelEnd) : 0.0;
+                    double eased = 0.5 * (1.0 - Math.Cos(Math.PI * t));
+                    return 1.0 - (1.0 - bowRatio) * eased;
                 }
                 return 1.0;
             }
@@ -67,33 +79,27 @@ namespace NavalArchitectureSuite.Models
             }
 
             var stationPoints = new Point3D[Stations][];
-            double halfLpp = lpp / 2.0;
-            double halfDepth = depth / 2.0;
             for (int i = 0; i < Stations; i++)
             {
                 double xn = (double)i / (Stations - 1);
-                // Centered on midship (X=0): stern at -halfLpp, bow at +halfLpp. Keeps the
-                // model's centroid near the world origin so camera framing (SetView/ZoomExtents
-                // in ShipBuilderView) doesn't depend on Lpp.
-                double x = xn * lpp - halfLpp;
-                double halfBeamStation = halfBeamMax * EnvelopeRatio(xn);
+                double x = xn * lpp;
+                double halfBeamStation = halfBeamMax * LackenbyEnvelope(xn, SternBeamRatio, BowBeamRatio);
+                double deckZ = depth * LackenbyEnvelope(xn, SternSheerRatio, BowSheerRatio);
 
                 var pts = new Point3D[pointsPerStation];
                 for (int k = 0; k <= HalfPoints; k++)
                 {
                     double u = (double)k / HalfPoints;
-                    double z = depth * (1.0 - u);
+                    double z = deckZ * (1.0 - u);
                     double y = HalfBreadthAt(z, halfBeamStation);
-                    // z stays in the keel-based (0..depth) frame for HalfBreadthAt/draft math;
-                    // only the stored point is shifted so the keel-to-deck midpoint sits at Z=0.
-                    pts[k] = new Point3D(x, -y, z - halfDepth);
+                    pts[k] = new Point3D(x, -y, z);
                 }
                 for (int k = 1; k <= HalfPoints; k++)
                 {
                     double u = (double)k / HalfPoints;
-                    double z = depth * u;
+                    double z = deckZ * u;
                     double y = HalfBreadthAt(z, halfBeamStation);
-                    pts[HalfPoints + k] = new Point3D(x, y, z - halfDepth);
+                    pts[HalfPoints + k] = new Point3D(x, y, z);
                 }
                 stationPoints[i] = pts;
             }
@@ -152,15 +158,14 @@ namespace NavalArchitectureSuite.Models
             var hullGeometryModel = new GeometryModel3D(mesh, hullMaterial) { BackMaterial = hullMaterial };
             group.Children.Add(hullGeometryModel);
 
-            // Translucent gold reference plane at the design waterline.
+            // Translucent gold reference plane at the design waterline, spanning the full hull length.
             var wl = new MeshGeometry3D();
-            double m = 0.03 * lpp;
+            double margin = 0.03 * lpp;
             double wy = halfBeamMax * 1.2;
-            double draftCentered = draft - halfDepth;
-            wl.Positions.Add(new Point3D(-halfLpp - m, -wy, draftCentered));
-            wl.Positions.Add(new Point3D(halfLpp + m, -wy, draftCentered));
-            wl.Positions.Add(new Point3D(halfLpp + m, wy, draftCentered));
-            wl.Positions.Add(new Point3D(-halfLpp - m, wy, draftCentered));
+            wl.Positions.Add(new Point3D(-margin, -wy, draft));
+            wl.Positions.Add(new Point3D(lpp + margin, -wy, draft));
+            wl.Positions.Add(new Point3D(lpp + margin, wy, draft));
+            wl.Positions.Add(new Point3D(-margin, wy, draft));
             wl.TriangleIndices.Add(0); wl.TriangleIndices.Add(1); wl.TriangleIndices.Add(2);
             wl.TriangleIndices.Add(0); wl.TriangleIndices.Add(2); wl.TriangleIndices.Add(3);
             var wlMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromArgb(60, 0xC8, 0x96, 0x0C)));
