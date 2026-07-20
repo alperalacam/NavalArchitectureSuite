@@ -1,0 +1,314 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.ResistancePropulsionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d"
+             d:DesignWidth="1180" d:DesignHeight="820">
+    <UserControl.Resources>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="PowerValueStyle" TargetType="TextBlock" BasedOn="{StaticResource StatValueStyle}">
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="RP" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Resistance and Propulsion" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Speed-Power Prediction (Holtrop-Mennen)" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="Principal Particulars" Style="{StaticResource SectionTitleStyle}"/>
+
+                        <TextBlock Text="LWL — Waterline Length (m)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                        <TextBlock Text="LBP — Length Between Perpendiculars (m)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lbp, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                        <TextBlock Text="BWL — Waterline Beam (m)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Bwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                        <TextBlock Text="Draft, T (m)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Draft, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                        <TextBlock Text="Cb — Block Coefficient" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cb, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                        <TextBlock Text="Displacement, Δ (t, salt water)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Displacement, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                        <TextBlock Text="Speed Range — Min (kn)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SpeedMin, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                        <TextBlock Text="Speed Range — Max / Design Speed (kn)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SpeedMax, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                        <TextBlock Text="Shaft Speed, N (rpm)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ShaftRpm, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                        <TextBlock Text="Design Slip Ratio (assumed)" Style="{StaticResource InputLabelStyle}"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding DesignSlip, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                        <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.75"
+                                   Text="Cm and Cwp are estimated from Cb; no bulbous bow, transom immersion or appendages are modeled. Valid for displacement hulls up to Fn ≈ 0.45."/>
+                        <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,2,0,0" Opacity="0.85"
+                                   Text="Power stages assume a single-screw wake/thrust-deduction estimate, an open-water propeller efficiency of 0.62 and fixed shaft/gearbox losses. Diameter and pitch ratio are draft-limited/slip-based preliminary sizing estimates, not a B-series chart solution."/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Hull form / resistance results -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Resistance Results at Design Speed" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="5"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Cm (est.)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Cm, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Cp (prismatic)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Cp, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Wetted Surface S" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding WettedSurfaceArea, StringFormat={}{0:F1} m²}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Form Factor (1+k1)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding FormFactor, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Froude No. (Vmax)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding FroudeNumberMax, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Rt (total)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RtDesign, StringFormat={}{0:F1} kN}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Rf (frictional)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RfDesign, StringFormat={}{0:F1} kN}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Rr (residuary)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RrDesign, StringFormat={}{0:F1} kN}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Wake Fraction w" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding WakeFraction, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Propulsive Coeff. ηD" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PropulsiveCoefficient, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Resistance chart -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Resistance vs Speed" Style="{StaticResource SectionTitleStyle}"/>
+                            <oxy:PlotView Model="{Binding ResistancePlotModel}" Height="300" Background="Transparent"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Required power -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Required Power at Design Speed" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="EHP — Effective Power" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Ehp, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="DHP — Delivered Power" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Dhp, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="SHP — Shaft Power" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Shp, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="BHP — Brake Power" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Bhp, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Propeller design -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Propeller Design (Preliminary Sizing)" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Diameter D" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PropellerDiameter, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Pitch Ratio P/D" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PitchRatio, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Open Water η0 (assumed)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="0.620" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Propulsive Coeff. ηD" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PropulsiveCoefficient, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,376 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.YachtDesignView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="1000">
+    <UserControl.Resources>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="#3D1620"/>
+            <Setter Property="BorderBrush" Value="#E05263"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Background" Value="#123D2A"/>
+                    <Setter Property="BorderBrush" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#E05263"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Foreground" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="PolarTableAngleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="PolarTableValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="YD" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Yacht Design" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Sailing &amp; Motor Yacht Performance Design" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- Principal particulars -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Principal Particulars" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="LWL — Waterline Length (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="LOA — Length Overall (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Loa, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Beam, B (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Bwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Displacement, Δ (kg)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Displacement, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Ballast Mass (kg)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding BallastMass, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Draft (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Draft, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="VCG — Height of C.G. above Waterline (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Vcg, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sail / rig -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Sail Plan" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Sail Area Upwind, SA (m² — main + 100% jib)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SailAreaUpwind, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Sail Area Downwind (m² — incl. spinnaker)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SailAreaDownwind, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="CoE — Centre of Effort Height above Waterline (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CoeHeight, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Classic imperial-formula ratios (DLR, SADR, CSF, Comfort Ratio) are computed from these particulars — see stat tiles."
+                                       Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.8"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- GM / wind reference -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="GM &amp; Wind Reference Inputs" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Estimated GM (m) — from Stability module or inclining test" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding GmEstimate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Reference Wind Speed for Heeling Check (kts)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ReferenceWindSpeedKts, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="True Wind Speed for VPP Polar (kts)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PolarWindSpeedKts, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.8"
+                                       Text="GM is a direct input rather than derived from hull form — a rigorous GM needs full hull hydrostatics (see Hydrostatics / Stability modules)."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Design ratios -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Design Ratios" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="BALLAST RATIO" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding BallastRatio, StringFormat={}{0:F1} %}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="DISP/LENGTH RATIO" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Dlr, StringFormat={}{0:F0}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="SAIL AREA/DISP RATIO" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Sadr, StringFormat={}{0:F1}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CAPSIZE SCREEN (CSF)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Csf, StringFormat={}{0:F2}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="COMFORT RATIO" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ComfortRatio, StringFormat={}{0:F1}}" Style="{StaticResource StatValueStyle}"/>
+                                        <TextBlock Text="{Binding ComfortBand}" Foreground="#8FA6C9" FontSize="10.5" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="HULL SPEED" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding HullSpeedKts, StringFormat={}{0:F2} kts}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="RIGHTING MOMENT @1°" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RightingMomentKNm, StringFormat={}{0:F2} kN·m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="HEELING MOMENT" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding HeelingMomentKNm, StringFormat={}{0:F2} kN·m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="DELLENBAUGH ANGLE" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding DellenbaughAngleDeg, StringFormat={}{0:F1}°}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Stability screening criteria -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Preliminary Stability Screening" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Criterion" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Requirement" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="Actual" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="3" Text="Status" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding Criteria}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <Border Grid.Column="3" Style="{StaticResource CriteriaBadgeStyle}">
+                                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource CriteriaBadgeTextStyle}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- VPP polar -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Simplified VPP Polar (Empirical Hull-Speed Multiplier)" Style="{StaticResource SectionTitleStyle}"/>
+                            <oxy:PlotView Model="{Binding PolarPlotModel}" Height="280" Background="Transparent"/>
+
+                            <TextBlock Text="Boat Speed by True Wind Angle" Style="{StaticResource SectionTitleStyle}" Margin="0,18,0,10"/>
+                            <ItemsControl ItemsSource="{Binding Polar}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="6"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource StatTileStyle}" Margin="0,0,8,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding TrueWindAngleDeg, StringFormat={}{0:F0}°}" Style="{StaticResource PolarTableAngleStyle}"/>
+                                                <TextBlock Text="{Binding BoatSpeedKts, StringFormat={}{0:F2} kts}" Style="{StaticResource PolarTableValueStyle}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0" Opacity="0.8"
+                                       Text="Hull speed V = 1.34·√LWL(ft). Boat speed at each TWA = hull speed × empirical efficiency multiplier × wind-speed factor (reference 12 kts true), capped at 1.05× hull speed. This is a qualitative teaching approximation of a real polar, not a force-balance VPP solution."/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MCA / RCD disclaimer -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Regulatory Note — MCA / EU RCD Design Categories" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock TextWrapping="Wrap" Foreground="#D7E1F0" FontSize="12.5"
+                                       Text="MCA Code of Practice / EU RCD 2013/53/EU stability categories use the STIX (Stability Index) formula, which requires a full righting-arm curve to large angles and is not computed here. CSF and Comfort Ratio above are commonly used preliminary screening ratios only."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

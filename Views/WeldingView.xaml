@@ -1,0 +1,491 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.WeldingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:NavalArchitectureSuite.ViewModels"
+             xmlns:local="clr-namespace:NavalArchitectureSuite.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="1000">
+    <UserControl.Resources>
+
+        <local:BoolToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#24467F"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#20396B"/>
+                                <Setter Property="Foreground" Value="#F2C94C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource InputComboBoxItemStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          ClickMode="Press"
+                                          Focusable="False">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="22"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="#C8960C"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="1" CornerRadius="4">
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="NoteTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Opacity" Value="0.8"/>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="#3D1620"/>
+            <Setter Property="BorderBrush" Value="#E05263"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Background" Value="#123D2A"/>
+                    <Setter Property="BorderBrush" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#E05263"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Foreground" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="WL" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Welding" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Weld Joint Design &amp; Procedure Specifications" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- Joint & material -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Joint &amp; Material" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Joint Type" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:WeldingViewModel.JointTypeNames}"
+                                      SelectedIndex="{Binding JointTypeIndex}"/>
+
+                            <TextBlock Text="Steel Grade" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:WeldingViewModel.SteelGradeNames}"
+                                      SelectedIndex="{Binding SteelGradeIndex}"/>
+
+                            <TextBlock Text="Plate Thickness, t1 (mm)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PlateThickness, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Second Plate Thickness, t2 (mm) — butt joints" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SecondPlateThickness, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}" Margin="0,12,0,0"
+                                       Text="t1 (thinner/attached plate) governs the fillet minimum-leg table; for butt joints the smaller of t1, t2 governs the net section."/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Design load & allowables -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Design Load &amp; Allowables" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Design Load, P (kN/m run)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding DesignLoad, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Allowable Shear Stress, τallow (MPa)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding AllowableShearStress, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Allowable Tensile Stress, σallow (MPa)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding AllowableTensileStress, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Safety Factor" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SafetyFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}" Margin="0,12,0,0"
+                                       Text="P is the applied load per unit length of joint: shear for fillet welds, axial tension for full-penetration butt welds. Raise Safety Factor above 1.0 for extra margin beyond the stated allowables."/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Heat input & preheat -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,16,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Heat Input &amp; Preheat" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Voltage, V (volts)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Voltage, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Current, I (amps)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Current, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Travel Speed, v (mm/min)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding TravelSpeed, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Carbon Equivalent, CE (IIW)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CarbonEquivalentCE, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}" Margin="0,12,0,0"
+                                       Text="Q = (V·I·60) / (v·1000) kJ/mm. Preheat estimate Tp = 350·√(CE−0.25) °C for CE &gt; 0.25, using CE = C + Mn/6 + (Cr+Mo+V)/5 + (Ni+Cu)/15."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Weld sizing results -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Weld Sizing Results" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <UniformGrid Columns="4" Visibility="{Binding IsFillet, Converter={StaticResource BoolToVis}}">
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="REQUIRED THROAT" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RequiredThroatThickness_mm, StringFormat={}{0:F2} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="REQUIRED LEG" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RequiredLegSize_mm, StringFormat={}{0:F2} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="GOVERNING LEG" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding GoverningLegSize_mm, StringFormat={}{0:F2} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="WELD UTILISATION" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding WeldUtilisation, StringFormat={}{0:P0}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <UniformGrid Columns="4" Visibility="{Binding IsButt, Converter={StaticResource BoolToVis}}">
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="GOVERNING THICKNESS" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding GoverningThicknessMm, StringFormat={}{0:F1} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="TENSILE STRESS, σ" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ButtTensileStress, StringFormat={}{0:F1} MPa}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="ALLOWABLE, σallow" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding AllowableTensileStress, StringFormat={}{0:F0} MPa}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="NDT REQUIREMENT" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="100% RT/UT" Style="{StaticResource StatValueStyle}" FontSize="16"/>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Design criteria -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Design Criteria" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Criterion" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Requirement" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="Actual" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="3" Text="Status" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding Criteria}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <Border Grid.Column="3" Style="{StaticResource CriteriaBadgeStyle}">
+                                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource CriteriaBadgeTextStyle}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- WPS reference -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="WPS Reference — Electrode &amp; Preheat" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <UniformGrid Columns="3">
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="AWS ELECTRODE CLASS" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding WpsElectrode}" Style="{StaticResource StatValueStyle}" FontSize="15"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="MIN. PREHEAT (GRADE TABLE)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding WpsMinPreheat}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="RECOMMENDED PROCESS" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RecommendedProcess}" Style="{StaticResource StatValueStyle}" FontSize="14"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="HEAT INPUT, Q" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding HeatInput_kJmm, StringFormat={}{0:F2} kJ/mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="PREHEAT (FROM CE)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PreheatFromCE_C, StringFormat={}{0:F0} °C}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <TextBlock Text="{Binding WpsNotes}" Style="{StaticResource NoteTextStyle}" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- NDT plan reference -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="NDT Inspection Plan (Reference)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Joint / Structural Class" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Extent" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="Method" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding NdtPlan}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Style="{StaticResource NoteTextStyle}" Margin="0,0,0,4"
+                               Text="Preliminary sizing checks only, following generic structural-steel weld design practice (AWS D1.1-style throat/leg relationships and minimum-size table). This is a teaching toolkit — not a substitute for a class-society-approved Welding Procedure Specification (WPS) / Procedure Qualification Record (PQR), fatigue assessment, or full NDT plan."/>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

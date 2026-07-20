@@ -1,0 +1,472 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.TonnageFreeboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="1000">
+    <UserControl.Resources>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="#3D1620"/>
+            <Setter Property="BorderBrush" Value="#E05263"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Background" Value="#123D2A"/>
+                    <Setter Property="BorderBrush" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#E05263"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Foreground" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Itemized breakdown row (label left, value right) -->
+        <Style x:Key="BreakdownRowLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="BreakdownRowValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Load line mark row -->
+        <Style x:Key="MarkTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="TF" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Tonnage and Freeboard" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="ITC69 Tonnage &amp; ICLL Freeboard Calculations" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- Part 1 inputs -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Part 1 — ITC69 Tonnage" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="V — Total Enclosed Volume (m³)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding TotalEnclosedVolume_m3, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Vc — Cargo Spaces Volume (m³)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CargoSpacesVolume_m3, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="d — Summer Draft (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SummerDraft_d, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="D — Moulded Depth (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding MouldedDepth_D, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="N1 — Passengers, Berths ≤8 (Cabins)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Passengers_N1, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="N2 — Passengers, Other" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Passengers_N2, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="GT = K1·V; NT from Vc, the (4d/3D)² depth ratio (capped at 1.0) and passenger numbers, floored at 0.30·GT per ITC69 Reg 4."
+                                       Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.8"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Part 2 inputs -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Part 2 — ICLL Freeboard (Type &quot;B&quot;)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Lfb — Freeboard Length (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lfb, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Bfb — Freeboard Beam (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Bfb, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="D — Moulded Depth for Freeboard (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding FreeboardDepth_D, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Cb — Block Coefficient at 0.85D" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cb_fb, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                            <TextBlock Text="Effective Superstructure/Trunk Length (% of Lfb)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SuperstructureLength_pct, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Net Sheer Correction (mm)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SheerCorrection_mm, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Actual Bow Height (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding BowHeight_actual_m, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Summer Displacement, Δ (t)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SummerDisplacement_t, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="TPC — Tonnes per cm Immersion" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding TPC, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Table freeboard from ICLL Annex I Table B (interpolated), corrected for Cb, depth, superstructure/trunk length and sheer. Teaching-level simplifications documented in code comments — not for statutory use."
+                                       Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.8"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Part 1 results -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Part 1 Results — ITC69 Tonnage" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="GROSS TONNAGE (GT)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding GrossTonnage, StringFormat={}{0:F1}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="NET TONNAGE (NT)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding NetTonnage, StringFormat={}{0:F1}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="(4d/3D)² — CAPPED" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding DepthFactorSq, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="K1" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding K1, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="K2" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding K2, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="K3" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding K3, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Part 2: table freeboard & corrections breakdown -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Part 2 — Table Freeboard &amp; Corrections" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Table Freeboard (ICLL Annex I Table B, interpolated)" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding TableFreeboard_mm, StringFormat={}{0:F0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Cb Correction Factor" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding CbCorrectionFactor, StringFormat={}×{0:F4}}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Table Freeboard after Cb Correction" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding TableFreeboardAfterCb_mm, StringFormat={}{0:F0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Depth Correction" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding DepthCorrection_mm, StringFormat={}{0:+0;-0;0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Superstructure/Trunk Deduction" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SuperstructureDeduction_mm, StringFormat={}-{0:F0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Sheer Correction" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SheerCorrection_mm, StringFormat={}{0:+0;-0;0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,6,0,10"/>
+
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Freeboard before Minimum Check" Style="{StaticResource BreakdownRowLabelStyle}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding FreeboardBeforeMinimumCheck_mm, StringFormat={}{0:F0} mm}" Style="{StaticResource BreakdownRowValueStyle}"/>
+                            </Grid>
+
+                            <Border Style="{StaticResource StatTileStyle}" Margin="0">
+                                <StackPanel>
+                                    <TextBlock Text="ASSIGNED (SUMMER) FREEBOARD" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding AssignedFreeboard_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Bow height criterion -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Minimum Bow Height Check (ICLL Reg 39)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Criterion" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Requirement" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="Actual" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="3" Text="Status" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding FreeboardCriteria}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <Border Grid.Column="3" Style="{StaticResource CriteriaBadgeStyle}">
+                                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource CriteriaBadgeTextStyle}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Load line marks -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Load Line Mark Positions (Freeboard from Deck Line)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Border Style="{StaticResource MarkTileStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="S — Summer" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding SummerMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource MarkTileStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="W — Winter" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding WinterMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource MarkTileStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="WNA — Winter North Atlantic" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding WinterNAMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource MarkTileStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="T — Tropical" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding TropicalMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource MarkTileStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="F — Fresh Water" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding FreshWaterMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource MarkTileStyle}" Margin="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="TF — Tropical Fresh Water" Style="{StaticResource CriteriaColTextStyle}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding TropicalFreshWaterMark_m, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}" Margin="0" FontSize="16"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0" Opacity="0.8"
+                                       Text="W = S + AssignedFreeboard/48; WNA = W + 50 mm for Lfb ≤ 100 m (otherwise = W); T = S − AssignedFreeboard/48; F = S − Δ/(4·TPC·100); TF = T − Δ/(4·TPC·100). Standard salt-water, standard seasonal-zone conventions; teaching-level simplification."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

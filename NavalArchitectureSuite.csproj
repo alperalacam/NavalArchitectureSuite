@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>naval_architecture_suite.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
+    <PackageReference Include="HelixToolkit.Wpf" Version="3.1.2" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.11" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="naval_architecture_suite.ico" />
+    <Resource Include="naval_architecture_suite_256.png" />
+    <Resource Include="naval_architecture_suite_64.png" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,566 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.MachineryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:vm="clr-namespace:NavalArchitectureSuite.ViewModels"
+             xmlns:local="clr-namespace:NavalArchitectureSuite.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="900">
+    <UserControl.Resources>
+
+        <local:BoolComplianceToBrushConverter x:Key="ComplianceToBrushConverter"/>
+        <local:NoxComplianceToBrushConverter x:Key="NoxComplianceToBrushConverter"/>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#24467F"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#20396B"/>
+                                <Setter Property="Foreground" Value="#F2C94C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource InputComboBoxItemStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          ClickMode="Press"
+                                          Focusable="False">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="22"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="#C8960C"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="1" CornerRadius="4">
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InputCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="PowerValueStyle" TargetType="TextBlock" BasedOn="{StaticResource StatValueStyle}">
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+
+        <Style x:Key="NoteTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Opacity" Value="0.8"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+        </Style>
+
+        <Style x:Key="TableHeaderStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="TableCellStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+        </Style>
+
+        <Style x:Key="ComplianceBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="MC" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Machinery" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Diesel Engine Selection, SFOC, EEDI &amp; MARPOL NOx Compliance" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Power &amp; Engine Selection" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Required Power at Propeller (kW)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding RequiredPower, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Ship Speed, V (kn)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ShipSpeed, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Sea Margin — Service Factor (%)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SeaMargin, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Engine Margin (%)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding EngineMargin, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="NCR (% of MCR)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding NcrPercent, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}"
+                                       Text="CSR = Required Power x (1+Sea Margin); MCR = CSR / (1-Engine Margin); NCR is the engine builder's normal continuous reference point (typically 90% MCR)."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="SFOC Curve Parameters" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="SFOC at 100% MCR (g/kWh)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SfocAt100, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Minimum SFOC (g/kWh)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SfocMin, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Load at Minimum SFOC (% MCR)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding LoadAtMinSfoc, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}"
+                                       Text="Quadratic fit through the test-bed curve minimum, typical of low/medium-speed diesels: SFOC(L) = SfocMin + k(L-Lmin)^2."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Fuel &amp; Range" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Fuel Oil Capacity (t)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding FuelCapacity, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="EEDI Parameters" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Capacity — DWT (t)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CapacityDwt, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Ship Type" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:MachineryViewModel.ShipTypeNames}"
+                                      SelectedIndex="{Binding ShipTypeIndex}"/>
+
+                            <TextBlock Text="EEDI Phase" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:MachineryViewModel.PhaseNames}"
+                                      SelectedIndex="{Binding PhaseIndex}"/>
+
+                            <TextBlock Text="Main Engine Fuel" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:MachineryViewModel.FuelTypeNames}"
+                                      SelectedIndex="{Binding MeFuelIndex}"/>
+
+                            <TextBlock Text="Auxiliary Engine Fuel" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox Style="{StaticResource InputComboBoxStyle}"
+                                      ItemsSource="{x:Static vm:MachineryViewModel.FuelTypeNames}"
+                                      SelectedIndex="{Binding AeFuelIndex}"/>
+
+                            <TextBlock Text="Auxiliary Engine SFC (g/kWh)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SfcAe, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}"
+                                       Text="Simplified single main-engine IMO formula (MARPOL Annex VI reg. 20/21): no shaft generators, ice class or innovative EE technologies (fj=feff=fi=fc=fl=fw=1). Reduction factor uses the largest-size-bracket value per phase — check reg. 21 Table 2 for size-adjusted values near tonnage thresholds."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="MARPOL NOx Tier Checker" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Construction / Keel-Laid Year" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ConstructionYear, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Rated Engine Speed, n (rpm)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding RatedEngineSpeed, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <CheckBox Content="Operates in a NOx Emission Control Area" Style="{StaticResource InputCheckBoxStyle}"
+                                      IsChecked="{Binding OperatesInEca}"/>
+
+                            <TextBlock Text="Actual NOx, Measured (g/kWh) — 0 = not evaluated" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ActualNOx, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Style="{StaticResource NoteTextStyle}"
+                                       Text="Limits per MARPOL Annex VI reg. 13. Tier III applies only inside a NOx ECA for engines on ships constructed 2016 or later; Tier II applies elsewhere."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- MCR / CSR / NCR -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="MCR / CSR / NCR Power Levels" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="MCR — Maximum Continuous" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Mcr, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CSR — Continuous Service" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Csr, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="NCR — Normal Continuous" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Ncr, StringFormat={}{0:F0} kW}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CSR as % of MCR" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding CsrPercentOfMcr, StringFormat={}{0:F1} %}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SFOC chart -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="SFOC Curve vs Load" Style="{StaticResource SectionTitleStyle}"/>
+                            <oxy:PlotView Model="{Binding SfocPlotModel}" Height="300" Background="Transparent"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Fuel consumption & range -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Fuel Consumption &amp; Range" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Rating" Style="{StaticResource TableHeaderStyle}"/>
+                                <TextBlock Grid.Column="1" Text="Power" Style="{StaticResource TableHeaderStyle}"/>
+                                <TextBlock Grid.Column="2" Text="Load" Style="{StaticResource TableHeaderStyle}"/>
+                                <TextBlock Grid.Column="3" Text="SFOC" Style="{StaticResource TableHeaderStyle}"/>
+                                <TextBlock Grid.Column="4" Text="Daily Fuel" Style="{StaticResource TableHeaderStyle}"/>
+                                <TextBlock Grid.Column="5" Text="Range" Style="{StaticResource TableHeaderStyle}"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding FuelTable}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource TableCellStyle}" Foreground="#F2C94C" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding PowerKw, StringFormat={}{0:F0} kW}" Style="{StaticResource TableCellStyle}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding LoadPercent, StringFormat={}{0:F0}%}" Style="{StaticResource TableCellStyle}"/>
+                                            <TextBlock Grid.Column="3" Text="{Binding SfocGPerKwh, StringFormat={}{0:F1} g/kWh}" Style="{StaticResource TableCellStyle}"/>
+                                            <TextBlock Grid.Column="4" Text="{Binding DailyFuelTonnes, StringFormat={}{0:F2} t/day}" Style="{StaticResource TableCellStyle}"/>
+                                            <TextBlock Grid.Column="5" Text="{Binding RangeNm, StringFormat={}{0:F0} nm}" Style="{StaticResource TableCellStyle}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,6,0,14"/>
+
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Endurance at CSR" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding EnduranceDays, StringFormat={}{0:F1} days}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Range at CSR" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RangeNm, StringFormat={}{0:F0} nm}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- EEDI -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="EEDI — Energy Efficiency Design Index" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="P_ME (0.75 x MCR)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PMe, StringFormat={}{0:F0} kW}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="P_AE (estimated)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding PAe, StringFormat={}{0:F0} kW}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="SFC_ME at 75% MCR" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding SfcMeAt75, StringFormat={}{0:F1} g/kWh}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Required EEDI" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding RequiredEedi, StringFormat={}{0:F2}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Border Style="{StaticResource StatTileStyle}" Width="220">
+                                    <StackPanel>
+                                        <TextBlock Text="Attained EEDI (g CO2 / t-nm)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding AttainedEedi, StringFormat={}{0:F2}}" Style="{StaticResource PowerValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource ComplianceBadgeStyle}" VerticalAlignment="Center"
+                                        Background="{Binding EediCompliant, Converter={StaticResource ComplianceToBrushConverter}}">
+                                    <TextBlock Text="{Binding EediStatusText}" FontWeight="Bold" FontSize="14" Foreground="#0A1F3D"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- NOx Tier -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="MARPOL NOx Tier Compliance" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Tier I Limit" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding TierILimit, StringFormat={}{0:F2} g/kWh}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Tier II Limit" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding TierIILimit, StringFormat={}{0:F2} g/kWh}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Tier III Limit" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding TierIIILimit, StringFormat={}{0:F2} g/kWh}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,4,0,14"/>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StatTileStyle}" Width="220">
+                                    <StackPanel>
+                                        <TextBlock Text="Applicable Tier" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ApplicableTier}" Style="{StaticResource StatValueStyle}" FontSize="16"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}" Width="220">
+                                    <StackPanel>
+                                        <TextBlock Text="Applicable Limit" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ApplicableLimit, StringFormat={}{0:F2} g/kWh}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource ComplianceBadgeStyle}" VerticalAlignment="Center"
+                                        Background="{Binding NoxComplianceText, Converter={StaticResource NoxComplianceToBrushConverter}}">
+                                    <TextBlock Text="{Binding NoxComplianceText}" FontWeight="Bold" FontSize="14" Foreground="#0A1F3D"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

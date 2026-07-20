@@ -1,0 +1,521 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.StabilityView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="1000">
+    <UserControl.Resources>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="GmValueStyle" TargetType="TextBlock" BasedOn="{StaticResource StatValueStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding GmIsPositive}" Value="False">
+                    <Setter Property="Foreground" Value="#E05263"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="#3D1620"/>
+            <Setter Property="BorderBrush" Value="#E05263"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Background" Value="#123D2A"/>
+                    <Setter Property="BorderBrush" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaBadgeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#E05263"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPass}" Value="True">
+                    <Setter Property="Foreground" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriteriaColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GzTableAngleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="GzTableValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+
+        <Style x:Key="ConditionListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="Transparent" BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1B3A6B"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#152F5C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ConditionListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ConditionListBoxItemStyle}"/>
+        </Style>
+
+        <Style x:Key="SmallActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#1B3A6B"/>
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="BorderBrush" Value="#C8960C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#20396B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="WeatherBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Background" Value="#3D1620"/>
+            <Setter Property="BorderBrush" Value="#E05263"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding WeatherCriterionPass}" Value="True">
+                    <Setter Property="Background" Value="#123D2A"/>
+                    <Setter Property="BorderBrush" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WeatherBadgeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#E05263"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding WeatherCriterionPass}" Value="True">
+                    <Setter Property="Foreground" Value="#3DDC84"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="ST" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Stability" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Intact Stability Criteria (IMO IS Code)" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- Loading condition manager -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Loading Conditions" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <ListBox x:Name="ConditionListBox" Style="{StaticResource ConditionListBoxStyle}"
+                                     ItemsSource="{Binding LoadingConditions}"
+                                     SelectedItem="{Binding SelectedCondition, Mode=TwoWay}"
+                                     MaxHeight="160" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="{Binding Name}" FontSize="13.5" FontWeight="SemiBold" Foreground="#D7E1F0"/>
+                                                <TextBlock Text="{Binding Displacement, StringFormat={}Δ {0:F0} t}" FontSize="11" Foreground="#8FA6C9" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Content="✕" Tag="{Binding}" Click="RemoveCondition_Click"
+                                                    Style="{StaticResource SmallActionButtonStyle}" Padding="6,2" FontSize="10"
+                                                    VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Content="+ Add Condition" Click="AddCondition_Click" Style="{StaticResource SmallActionButtonStyle}"
+                                    HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,16,0,4"/>
+
+                            <TextBlock Text="Selected Condition" Style="{StaticResource InputLabelStyle}" Margin="0,10,0,4"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedCondition.Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Displacement, Δ (t, salt water)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedCondition.Displacement, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="KG — Solid, Height of C.G. above Keel (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedCondition.Kg, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                            <TextBlock Text="Free Surface Moment, ΣFSM (t·m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedCondition.FreeSurfaceMoment, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Hull form -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Hull Form (KB / BM Basis)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="LWL — Waterline Length (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="BWL — Waterline Beam (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Bwl, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Cb — Block Coefficient" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cb, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                            <TextBlock Text="Cwp — Waterplane Coefficient" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cwp, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+
+                            <TextBlock Text="Draft, KB and BM are recomputed per condition from Δ using Morrish's and Normand's approximations (same basis as the Hydrostatics module)."
+                                       Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,16,0,0" Opacity="0.8"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Weather criterion inputs -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Weather Criterion Inputs" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Wind Pressure, P (Pa)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding WindPressure, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+
+                            <TextBlock Text="Lateral Area, A (m²)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding LateralArea, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Z — Centroid Height, Lateral to ~T/2 (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding HeightZ, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+
+                            <TextBlock Text="Down-flooding Angle, θf (deg)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding DownfloodingAngle, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <CheckBox Content="Fitted with bilge keels (k = 0.7)" Style="{StaticResource InputCheckBoxStyle}"
+                                      IsChecked="{Binding HasBilgeKeels}"/>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,12,0,0" Opacity="0.8"
+                                       Text="P = 504 Pa is the IMO default for unrestricted service. X1, X2 and the roll-period s-factor use standard published tables; s uses the simplified Tr-only approximation (see code comments)."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Condition results -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Condition Results" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="DRAFT (T)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding DraftT, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="KB" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Kb, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="BM" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Bm, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="KM" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Km, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="FSC" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding Fsc, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="GM (SOLID)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding GmSolid, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="GM (FLUID)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding GmFluid, StringFormat={}{0:F3} m}" Style="{StaticResource GmValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="MAX GZ" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding MaxGz, StringFormat={}{0:F3} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- GZ Curve chart -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="GZ Curve (Wall-Sided Approximation)" Style="{StaticResource SectionTitleStyle}"/>
+                            <oxy:PlotView Model="{Binding GzPlotModel}" Height="280" Background="Transparent"/>
+
+                            <TextBlock Text="GZ at Key Angles" Style="{StaticResource SectionTitleStyle}" Margin="0,18,0,10"/>
+                            <ItemsControl ItemsSource="{Binding GzTable}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="7"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource StatTileStyle}" Margin="0,0,8,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding AngleDeg, StringFormat={}{0:F0}°}" Style="{StaticResource GzTableAngleStyle}"/>
+                                                <TextBlock Text="{Binding GzMetres, StringFormat={}{0:F3} m}" Style="{StaticResource GzTableValueStyle}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- General criteria -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="IMO 2008 IS Code — Part A, Reg 2.2 (General Criteria)" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Criterion" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Requirement" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="Actual" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="3" Text="Status" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding Criteria}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <Border Grid.Column="3" Style="{StaticResource CriteriaBadgeStyle}">
+                                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource CriteriaBadgeTextStyle}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Weather criterion -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Severe Wind and Rolling Criterion (Reg 2.3)" Style="{StaticResource SectionTitleStyle}" Margin="0"/>
+                                <Border Grid.Column="1" Style="{StaticResource WeatherBadgeStyle}">
+                                    <TextBlock Text="{Binding WeatherStatusText}" Style="{StaticResource WeatherBadgeTextStyle}"/>
+                                </Border>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding WeatherCriteria}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1.4*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Requirement}" Style="{StaticResource CriteriaColTextStyle}" Foreground="#8FA6C9"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding ActualText}" Style="{StaticResource CriteriaColTextStyle}"/>
+                                                <Border Grid.Column="3" Style="{StaticResource CriteriaBadgeStyle}">
+                                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource CriteriaBadgeTextStyle}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0" Opacity="0.8"
+                                       Text="Weather criterion per IMO 2008 IS Code Part A §2.3: lw1 = P·A·Z/(1000·g·Δ), lw2 = 1.5·lw1; θ1 = 109·k·X1·X2·√(r·s). Pass requires Area b ≥ Area a. Provided for preliminary / teaching purposes — verify against the full regulatory tables for class or flag-state submissions."/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

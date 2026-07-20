@@ -1,0 +1,390 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="1000">
+    <UserControl.Resources>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10.5"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="ReportListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="Transparent" BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1B3A6B"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#152F5C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ReportListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ReportListBoxItemStyle}"/>
+        </Style>
+
+        <Style x:Key="SmallActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#1B3A6B"/>
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="BorderBrush" Value="#C8960C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#20396B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ExportButtonStyle" TargetType="Button" BasedOn="{StaticResource SmallActionButtonStyle}">
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ModuleColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CountColTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Module header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="RPT" Foreground="#C8960C" FontWeight="Bold" FontSize="14"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Reports" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Automated Class &amp; Statutory Report Generation" FontSize="14" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= INPUTS ================= -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- Project title block -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Project Title Block" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Project Name" Style="{StaticResource InputLabelStyle}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Project Number" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ProjectNumber, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Client" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Client, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Classification Society" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ClassSociety, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Prepared By (Company)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PreparedByCompany, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0" Opacity="0.8"
+                                       Text="These fields form the title block on every exported report index and apply to the whole export."/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Report entry manager -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Report Entries" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <ListBox x:Name="EntryListBox" Style="{StaticResource ReportListBoxStyle}"
+                                     ItemsSource="{Binding Entries}"
+                                     SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
+                                     MaxHeight="200" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="{Binding Title}" FontSize="13.5" FontWeight="SemiBold" Foreground="#D7E1F0"/>
+                                                <TextBlock FontSize="11" Foreground="#8FA6C9" Margin="0,2,0,0">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} · Rev {1} · {2}">
+                                                            <Binding Path="Module"/>
+                                                            <Binding Path="Revision"/>
+                                                            <Binding Path="Status"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Content="✕" Tag="{Binding}" Click="RemoveEntry_Click"
+                                                    Style="{StaticResource SmallActionButtonStyle}" Padding="6,2" FontSize="10"
+                                                    VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Content="+ Add Report Entry" Click="AddEntry_Click" Style="{StaticResource SmallActionButtonStyle}"
+                                    HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,16,0,4"/>
+
+                            <TextBlock Text="Title" Style="{StaticResource InputLabelStyle}" Margin="0,10,0,4"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedEntry.Title, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Module" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Module, UpdateSourceTrigger=PropertyChanged}"
+                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14">
+                                <ComboBoxItem Content="Hydrostatics"/>
+                                <ComboBoxItem Content="Stability"/>
+                                <ComboBoxItem Content="Damage Stability"/>
+                                <ComboBoxItem Content="Welding"/>
+                                <ComboBoxItem Content="Yacht Design"/>
+                                <ComboBoxItem Content="LNG Systems"/>
+                                <ComboBoxItem Content="Manoeuvring"/>
+                                <ComboBoxItem Content="Tonnage and Freeboard"/>
+                                <ComboBoxItem Content="Resistance and Propulsion"/>
+                                <ComboBoxItem Content="Machinery"/>
+                                <ComboBoxItem Content="Ship Builder"/>
+                            </ComboBox>
+
+                            <TextBlock Text="Revision" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedEntry.Revision, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Prepared By" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedEntry.PreparedBy, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Date (yyyy-MM-dd)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedEntry.DateIso, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Text="Status" Style="{StaticResource InputLabelStyle}"/>
+                            <ComboBox IsEditable="True" Text="{Binding SelectedEntry.Status, UpdateSourceTrigger=PropertyChanged}"
+                                      Background="#0A1F3D" Foreground="White" BorderBrush="#24467F" Padding="9,7" FontSize="14">
+                                <ComboBoxItem Content="Draft"/>
+                                <ComboBoxItem Content="Issued for Review"/>
+                                <ComboBoxItem Content="Approved"/>
+                            </ComboBox>
+
+                            <TextBlock Text="Notes" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding SelectedEntry.Notes, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap" AcceptsReturn="True" MinHeight="56"/>
+
+                            <CheckBox Content="Include in export" Style="{StaticResource InputCheckBoxStyle}"
+                                      IsChecked="{Binding SelectedEntry.IncludeInExport}"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ================= OUTPUTS ================= -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- Export scope -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Export Scope" Style="{StaticResource SectionTitleStyle}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="ENTRIES INCLUDED" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ExportSummaryText}" Style="{StaticResource StatValueStyle}"
+                                                   FontSize="15" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="TOTAL LIVE FORMULAS" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding TotalFormulaCount, StringFormat={}{0:N0}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Formula library audit -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Formula Library Audit — Live Formulas by Module" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <Grid Margin="4,0,4,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="80"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Module" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="Formulas" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding FormulaAudit}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#1E3B6B" BorderThickness="0,0,0,1" Padding="4,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto" MinWidth="80"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Module}" Style="{StaticResource ModuleColTextStyle}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding FormulaCount, StringFormat={}{0:N0}}" Style="{StaticResource CountColTextStyle}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Grid Margin="4,10,4,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="80"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Total" Foreground="#D7E1F0" FontSize="13" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding TotalFormulaCount, StringFormat={}{0:N0}}" Foreground="#F2C94C" FontSize="13" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Export -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Generate Report Index" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Foreground="#8FA6C9" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,14" Opacity="0.85"
+                                       Text="Compiles the project title block, all report entries flagged 'Include in export', and the formula-library audit into a single Markdown (.md) file."/>
+
+                            <Button x:Name="ExportButton" Content="Export Report Index (.md)" Click="ExportButton_Click"
+                                    Style="{StaticResource ExportButtonStyle}"/>
+
+                            <TextBlock Text="{Binding ExportStatusMessage}" Foreground="#D7E1F0" FontSize="12"
+                                       TextWrapping="Wrap" Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
