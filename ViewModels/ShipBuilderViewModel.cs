@@ -165,6 +165,37 @@ namespace NavalArchitectureSuite.ViewModels
             private set => SetField(ref _hullModel, value);
         }
 
+        // Orientation label positions for the 3D viewport's BillboardTextVisual3D markers.
+        // Match HullMeshBuilder's convention: stern X=0, bow X=Lpp, centerline Y=0,
+        // +Y=starboard, keel Z=0, deck Z=Depth.
+        private Point3D _bowLabelPosition;
+        public Point3D BowLabelPosition
+        {
+            get => _bowLabelPosition;
+            private set => SetField(ref _bowLabelPosition, value);
+        }
+
+        private Point3D _sternLabelPosition;
+        public Point3D SternLabelPosition
+        {
+            get => _sternLabelPosition;
+            private set => SetField(ref _sternLabelPosition, value);
+        }
+
+        private Point3D _portLabelPosition;
+        public Point3D PortLabelPosition
+        {
+            get => _portLabelPosition;
+            private set => SetField(ref _portLabelPosition, value);
+        }
+
+        private Point3D _starboardLabelPosition;
+        public Point3D StarboardLabelPosition
+        {
+            get => _starboardLabelPosition;
+            private set => SetField(ref _starboardLabelPosition, value);
+        }
+
         public ShipBuilderViewModel() => Recalculate();
 
         private void Recalculate()
@@ -182,6 +213,12 @@ namespace NavalArchitectureSuite.ViewModels
             CalculatedCp = Cm != 0 ? Cb / Cm : 0;
 
             HullModel = HullMeshBuilder.BuildHull(Lpp, Breadth, Depth, Draft, Cb, Cm, Cwp);
+
+            double halfBeam = Breadth / 2.0;
+            BowLabelPosition = new Point3D(Lpp, 0, Depth * 1.15);
+            SternLabelPosition = new Point3D(0, 0, Depth * 1.15);
+            PortLabelPosition = new Point3D(Lpp / 2.0, -halfBeam * 1.3, Depth);
+            StarboardLabelPosition = new Point3D(Lpp / 2.0, halfBeam * 1.3, Depth);
         }
 
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

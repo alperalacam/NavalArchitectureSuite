@@ -282,6 +282,15 @@
                                     </h:HelixViewport3D.Camera>
                                     <h:SunLight/>
                                     <ModelVisual3D Content="{Binding HullModel}"/>
+
+                                    <h:BillboardTextVisual3D Text="BOW" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                                                              Position="{Binding BowLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="STERN" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                                                              Position="{Binding SternLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="PORT" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                                                              Position="{Binding PortLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="STARBOARD" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                                                              Position="{Binding StarboardLabelPosition}"/>
                                 </h:HelixViewport3D>
                             </Border>
                             <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0" Opacity="0.8"

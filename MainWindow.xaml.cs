@@ -14,12 +14,13 @@ namespace NavalArchitectureSuite
     {
         private readonly Dictionary<string, NavItem> _navItems = BuildNavItems();
 
-        // Reports needs to read live figures out of these three modules for its PDF export,
+        // Reports needs to read live figures out of these four modules for its PDF export,
         // so (unlike the other modules) they are created once and kept alive for the session
         // rather than being recreated with `new` on every nav click.
         private readonly HydrostaticsView _hydrostaticsView = new();
         private readonly StabilityView _stabilityView = new();
         private readonly ResistancePropulsionView _resistanceView = new();
+        private readonly MachineryView _machineryView = new();
         private readonly ReportsView _reportsView;
 
         public MainWindow()
@@ -32,6 +33,7 @@ namespace NavalArchitectureSuite
             reportsViewModel.HydrostaticsSource = (HydrostaticsViewModel)_hydrostaticsView.DataContext;
             reportsViewModel.StabilitySource = (StabilityViewModel)_stabilityView.DataContext;
             reportsViewModel.ResistanceSource = (ResistancePropulsionViewModel)_resistanceView.DataContext;
+            reportsViewModel.MachinerySource = (MachineryViewModel)_machineryView.DataContext;
 
             RestoreWindowBounds();
             ClampToWorkArea();
@@ -133,7 +135,7 @@ namespace NavalArchitectureSuite
 
             if (key == "Machinery")
             {
-                ContentFrame.Content = new MachineryView();
+                ContentFrame.Content = _machineryView;
                 return;
             }
 

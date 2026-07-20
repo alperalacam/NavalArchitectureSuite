@@ -85,6 +85,9 @@ namespace NavalArchitectureSuite.ViewModels
 
         #region Inputs — Power & Engine Selection
 
+        private string _engineModel = "";
+        public string EngineModel { get => _engineModel; set => SetField(ref _engineModel, value); }
+
         private double _requiredPower = 6000.0;
         public double RequiredPower { get => _requiredPower; set { if (SetField(ref _requiredPower, value)) Recalculate(); } }
 

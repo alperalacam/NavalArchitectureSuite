@@ -32,7 +32,7 @@ namespace NavalArchitectureSuite.Views
             SetViewAndFit(new Point3D(0, 1000, 0), new Vector3D(0, -1, 0), new Vector3D(0, 0, 1));
 
         private void FrontViewButton_Click(object sender, RoutedEventArgs e) =>
-            // Hull is centered on midship (X=0): stern at -Lpp/2, bow at +Lpp/2 — look from beyond the bow toward the stern.
+            // Stern is at X=0, bow at X=Lpp (per HullMeshBuilder) — look from beyond the bow toward the stern.
             SetViewAndFit(new Point3D(1000, 0, 0), new Vector3D(-1, 0, 0), new Vector3D(0, 0, 1));
 
         private void FitToScreenButton_Click(object sender, RoutedEventArgs e) =>

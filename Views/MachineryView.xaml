@@ -228,6 +228,9 @@
                         <StackPanel>
                             <TextBlock Text="Power &amp; Engine Selection" Style="{StaticResource SectionTitleStyle}"/>
 
+                            <TextBlock Text="Selected Engine Model" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding EngineModel, UpdateSourceTrigger=PropertyChanged}"/>
+
                             <TextBlock Text="Required Power at Propeller (kW)" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding RequiredPower, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
 
