@@ -14,13 +14,38 @@ namespace NavalArchitectureSuite.Services
     /// directly rather than pulling in a new package. Content is set entirely in Courier
     /// so column alignment is exact without real font-metrics.
     /// </summary>
+    /// <summary>Standard paper sizes supported by the PDF writer.</summary>
+    public enum PdfPaperSize
+    {
+        A4,   // 210 x 297 mm  =  595 x 842 pt
+        A3,   // 297 x 420 mm  =  842 x 1191 pt
+        A1,   // 594 x 841 mm  =  1684 x 2384 pt
+        A0,   // 841 x 1189 mm =  2384 x 3370 pt
+    }
+
     public sealed class SimplePdfDocument
     {
-        private const double PageWidth  = 612;   // US Letter, points
-        private const double PageHeight = 792;
-        private const double MarginX    = 54;
-        private const double TopY       = 738;
-        private const double BottomY    = 54;
+        private readonly double PageWidth;
+        private readonly double PageHeight;
+        private const double MarginX  = 54;
+        private double TopY    => PageHeight - 54;
+        private const double BottomY  = 54;
+
+        public PdfPaperSize PaperSize { get; }
+
+        public SimplePdfDocument(PdfPaperSize size = PdfPaperSize.A4)
+        {
+            PaperSize = size;
+            (PageWidth, PageHeight) = size switch
+            {
+                PdfPaperSize.A4 => (595.0,  842.0),
+                PdfPaperSize.A3 => (842.0,  1191.0),
+                PdfPaperSize.A1 => (1684.0, 2384.0),
+                PdfPaperSize.A0 => (2384.0, 3370.0),
+                _               => (595.0,  842.0),
+            };
+            _y = TopY;
+        }
 
         private const string RegularFont = "F1"; // Courier
         private const string BoldFont    = "F2"; // Courier-Bold
@@ -35,7 +60,7 @@ namespace NavalArchitectureSuite.Services
         private readonly List<PageContent> _pages = new();
         private List<Line>       _currentLines  = new();
         private List<ImageBlock> _currentImages = new();
-        private double _y = TopY;
+        private double _y;
 
         // Accumulated PNG image bytes — each entry becomes a separate PDF XObject.
         private readonly List<byte[]> _images = new();

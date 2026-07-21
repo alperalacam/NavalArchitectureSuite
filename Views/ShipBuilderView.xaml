@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:h="http://helix-toolkit.org/wpf"
+             xmlns:local="clr-namespace:NavalArchitectureSuite.Views"
              xmlns:vm="clr-namespace:NavalArchitectureSuite.ViewModels"
              mc:Ignorable="d"
              d:DesignWidth="1180" d:DesignHeight="820">
@@ -387,6 +388,16 @@
                                     </StackPanel>
                                 </Border>
                             </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardStyle}" Margin="0,18,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Body Plan — 11 Station Sections" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,8"
+                                       Text="Live body plan sliced from the parametric hull at 10 station intervals (AP to FP). Forward sections on right, aft sections on left. Updates instantly as dimensions change."/>
+                            <local:BodyPlanCanvas x:Name="BodyPlan" Height="300"
+                                                  Background="Transparent" ClipToBounds="True"/>
                         </StackPanel>
                     </Border>
 

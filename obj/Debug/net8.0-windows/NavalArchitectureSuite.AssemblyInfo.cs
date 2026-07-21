@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NavalArchitectureSuite")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe161a1a41890dcca8b1a70f6450647b92810a7d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d58f0aab10a037b13105467f7254899a3e7cc705")]
 [assembly: System.Reflection.AssemblyProductAttribute("NavalArchitectureSuite")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NavalArchitectureSuite")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

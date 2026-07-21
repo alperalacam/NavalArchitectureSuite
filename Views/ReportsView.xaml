@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:NavalArchitectureSuite.ViewModels"
              mc:Ignorable="d"
              d:DesignWidth="1220" d:DesignHeight="1000">
     <UserControl.Resources>
@@ -416,6 +417,15 @@
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                         <StackPanel>
                             <TextBlock Text="PDF Sections to Include" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <!-- Paper size -->
+                            <TextBlock Text="Paper Size" Foreground="#8FA6C9" FontSize="11.5" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{x:Static vm:ReportsViewModel.PaperSizeNames}"
+                                      SelectedIndex="{Binding PaperSizeIndex}"
+                                      Style="{StaticResource InputComboBoxStyle}"
+                                      Margin="0,0,0,14"
+                                      ToolTip="A4 for standard reports. A0 for a full-size body plan drawing (841 x 1189 mm)."/>
+
                             <TextBlock Foreground="#8FA6C9" FontSize="11" Margin="0,0,0,10" TextWrapping="Wrap"
                                        Text="Tick the sections you want printed in the exported PDF. Title block is always included."/>
                             <UniformGrid Columns="2" Margin="0,4,0,0">
@@ -451,6 +461,9 @@
                                           Style="{StaticResource InputCheckBoxStyle}"/>
                                 <CheckBox Content="Bow Design — Kracht Bulb, Anchor Equipment"
                                           IsChecked="{Binding IncludeBowDesign}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Body Plan — 11 Station Cross-Sections"
+                                          IsChecked="{Binding IncludeBodyPlan}"
                                           Style="{StaticResource InputCheckBoxStyle}"/>
                             </UniformGrid>
                         </StackPanel>

@@ -8,7 +8,9 @@ namespace NavalArchitectureSuite.Views
         public BowDesignView()
         {
             InitializeComponent();
-            DataContext = new BowDesignViewModel();
+            var vm = new BowDesignViewModel();
+            DataContext = vm;
+            Loaded += (_, _) => BowSchematic.SetViewModel(vm);
         }
     }
 }

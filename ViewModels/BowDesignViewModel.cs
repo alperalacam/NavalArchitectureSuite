@@ -355,9 +355,12 @@ namespace NavalArchitectureSuite.ViewModels
             ChainLengthM       = Math.Round(26.859 * Math.Pow(en, 0.2692), 1);
             ChainShots         = (int)Math.Ceiling(ChainLengthM / 27.5);
 
-            // IACS UR W22 Grade K2 stud link breaking load: BL = 0.0223 × d² × (44 − 0.08d) × g / 1000 kN
+            // IACS UR W22 (2019) Grade K2 stud link breaking load:
+            // BL = 0.0223 x d^2 x (44 - 0.08 x d)  kN  (d in mm)
+            // Constants already incorporate gravity — result is directly in kN.
+            // Source: IACS UR W22 (2019) Table 2.
             double d = ChainDiameterMm;
-            ChainBreakingLoadKN = Math.Round(0.0223 * d * d * (44.0 - 0.08 * d) * g / 1000.0, 1);
+            ChainBreakingLoadKN = Math.Round(0.0223 * d * d * (44.0 - 0.08 * d), 0);
             HawsePipeDiameterMm = Math.Round(1.8 * d, 1);
         }
 

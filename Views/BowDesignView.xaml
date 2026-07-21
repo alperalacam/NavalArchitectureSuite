@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NavalArchitectureSuite.Views"
              mc:Ignorable="d"
              d:DesignWidth="1220" d:DesignHeight="900">
 
@@ -281,6 +282,18 @@
                                         <TextBlock Text="0.30–0.60" Style="{StaticResource NoteStyle}"/>
                                     </StackPanel>
                                 </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Bow Schematic -->
+                        <Border Style="{StaticResource CardStyle}" Margin="0,14,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Bow Profile Schematic — Starboard Side View" Style="{StaticResource SectionTitleStyle}"/>
+                                <TextBlock Style="{StaticResource NoteStyle}" Margin="0,0,0,8"
+                                           Text="Live schematic updates as Kracht parameters change. Green line = collision bulkhead recommended position."/>
+                                <local:BowSchematicCanvas x:Name="BowSchematic" Height="280"
+                                                          Background="Transparent"
+                                                          ClipToBounds="True"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>

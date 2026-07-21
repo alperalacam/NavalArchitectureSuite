@@ -14,7 +14,11 @@ namespace NavalArchitectureSuite.Views
             InitializeComponent();
             DataContext = ShipBuilderViewModel.Instance;
 
-            Loaded += (_, _) => ZoomAfterDelay(150);
+            Loaded += (_, _) =>
+            {
+                ZoomAfterDelay(150);
+                BodyPlan.SetViewModel(ShipBuilderViewModel.Instance);
+            };
 
             IsVisibleChanged += (_, e) =>
             {

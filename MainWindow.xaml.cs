@@ -43,6 +43,9 @@ namespace NavalArchitectureSuite
             reportsViewModel.YachtDesignSource     = (YachtDesignViewModel)_yachtDesignView.DataContext;
             reportsViewModel.ManoeuvringSource     = (ManoeuvringViewModel)_manoeuvringView.DataContext;
             reportsViewModel.BowDesignSource       = (BowDesignViewModel)_bowDesignView.DataContext;
+            reportsViewModel.WeldingSource         = new WeldingViewModel();
+            reportsViewModel.TonnageSource         = new TonnageFreeboardViewModel();
+            reportsViewModel.BodyPlanCanvasRef     = _shipBuilderView.BodyPlan;
 
             RestoreWindowBounds();
             ClampToWorkArea();
