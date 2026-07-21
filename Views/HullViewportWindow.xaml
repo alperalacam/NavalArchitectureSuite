@@ -47,7 +47,7 @@
                     <Button Content="Top View"    Click="TopView_Click"    Style="{StaticResource ToolbarButtonStyle}"/>
                     <Button Content="Side View"   Click="SideView_Click"   Style="{StaticResource ToolbarButtonStyle}"/>
                     <Button Content="Front View"  Click="FrontView_Click"  Style="{StaticResource ToolbarButtonStyle}"/>
-                    <Button Content="Fit to View" Click="FitView_Click"    Style="{StaticResource ToolbarButtonStyle}"/>
+
                 </WrapPanel>
             </DockPanel>
         </Border>

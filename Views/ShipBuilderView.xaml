@@ -262,9 +262,6 @@
                                 <Button x:Name="FrontViewButton" Content="Front View" Click="FrontViewButton_Click"
                                         Style="{StaticResource ViewportToolbarButtonStyle}"
                                         ToolTip="Body plan view from the bow"/>
-                                <Button x:Name="FitToScreenButton" Content="Fit to Screen" Click="FitToScreenButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Zoom to fit the hull in view"/>
                                 <Button x:Name="PopOutViewButton" Content="⤢  Pop Out 3D View" Click="PopOutViewButton_Click"
                                         Style="{StaticResource ViewportToolbarButtonStyle}"
                                         ToolTip="Open the 3D hull in a resizable floating window"/>
