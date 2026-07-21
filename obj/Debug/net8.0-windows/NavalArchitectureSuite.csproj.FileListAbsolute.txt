@@ -112,3 +112,5 @@ C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\DamageStabilityVie
 C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\WeldingView.baml
 C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\HullViewportWindow.baml
 C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\HullViewportWindow.g.cs
+C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\BowDesignView.baml
+C:\Temp\NavalArchitectureSuite\obj\Debug\net8.0-windows\Views\BowDesignView.g.cs

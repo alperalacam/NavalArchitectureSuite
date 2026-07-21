@@ -3,6 +3,9 @@
   "WorkspaceRootPath": "C:\\Temp\\NavalArchitectureSuite\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\RB269\\AppData\\Local\\Temp\\.vsdbgsrc\\d1af1769b234626406ba4999490eb004ed59af4984d32a319132ada97bfb6c86\\PropertyPathWorker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{882B6A5A-52A7-7C6A-D326-8AF513D96D91}|NavalArchitectureSuite.csproj|c:\\temp\\navalarchitecturesuite\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{882B6A5A-52A7-7C6A-D326-8AF513D96D91}|NavalArchitectureSuite.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -23,6 +26,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PropertyPathWorker.cs",
+              "DocumentMoniker": "C:\\Users\\RB269\\AppData\\Local\\Temp\\.vsdbgsrc\\d1af1769b234626406ba4999490eb004ed59af4984d32a319132ada97bfb6c86\\PropertyPathWorker.cs",
+              "RelativeDocumentMoniker": "..\\..\\Users\\RB269\\AppData\\Local\\Temp\\.vsdbgsrc\\d1af1769b234626406ba4999490eb004ed59af4984d32a319132ada97bfb6c86\\PropertyPathWorker.cs",
+              "ToolTip": "C:\\Users\\RB269\\AppData\\Local\\Temp\\.vsdbgsrc\\d1af1769b234626406ba4999490eb004ed59af4984d32a319132ada97bfb6c86\\PropertyPathWorker.cs [Read Only]",
+              "RelativeToolTip": "..\\..\\Users\\RB269\\AppData\\Local\\Temp\\.vsdbgsrc\\d1af1769b234626406ba4999490eb004ed59af4984d32a319132ada97bfb6c86\\PropertyPathWorker.cs [Read Only]",
+              "ViewState": "AgIAAKQEAAAAAAAAAAAuwKoEAAAEAAAAAQAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-21T08:27:02.118Z",
+              "EditorCaption": " [Read Only]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Temp\\NavalArchitectureSuite\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
@@ -34,7 +50,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Temp\\NavalArchitectureSuite\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",

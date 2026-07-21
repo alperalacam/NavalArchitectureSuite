@@ -117,6 +117,9 @@
                         <RadioButton x:Name="BtnTonnageFreeboard" Tag="TonnageFreeboard" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Checked="NavButton_Checked">
                             <TextBlock Text="Tonnage and Freeboard" TextWrapping="Wrap" Width="180"/>
                         </RadioButton>
+                        <RadioButton x:Name="BtnBowDesign" Tag="BowDesign" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Checked="NavButton_Checked">
+                            <TextBlock Text="Bow Design"/>
+                        </RadioButton>
                         <RadioButton x:Name="BtnReports" Tag="Reports" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Checked="NavButton_Checked">
                             <TextBlock Text="Reports"/>
                         </RadioButton>
@@ -133,7 +136,7 @@
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="0,1,0,0">
-            <TextBlock Text="28 Volumes | 3246 Live Formulas | Alper Alacam | Turkiye | 2026 | v1.0"
+            <TextBlock Text="28 Volumes | 3358 Live Formulas | Alper Alacam | Turkiye | 2026 | v1.0"
                        Foreground="#C8960C" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
     </Grid>

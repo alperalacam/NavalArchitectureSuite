@@ -25,6 +25,7 @@ namespace NavalArchitectureSuite
         private readonly DamageStabilityView _damageStabilityView = new();
         private readonly YachtDesignView _yachtDesignView = new();
         private readonly ManoeuvringView _manoeuvringView = new();
+        private readonly BowDesignView _bowDesignView = new();
         private readonly ReportsView _reportsView;
 
         public MainWindow()
@@ -41,6 +42,7 @@ namespace NavalArchitectureSuite
             reportsViewModel.DamageStabilitySource = (DamageStabilityViewModel)_damageStabilityView.DataContext;
             reportsViewModel.YachtDesignSource     = (YachtDesignViewModel)_yachtDesignView.DataContext;
             reportsViewModel.ManoeuvringSource     = (ManoeuvringViewModel)_manoeuvringView.DataContext;
+            reportsViewModel.BowDesignSource       = (BowDesignViewModel)_bowDesignView.DataContext;
 
             RestoreWindowBounds();
             ClampToWorkArea();
@@ -191,6 +193,12 @@ namespace NavalArchitectureSuite
             if (key == "Reports")
             {
                 ContentFrame.Content = _reportsView;
+                return;
+            }
+
+            if (key == "BowDesign")
+            {
+                ContentFrame.Content = _bowDesignView;
                 return;
             }
 

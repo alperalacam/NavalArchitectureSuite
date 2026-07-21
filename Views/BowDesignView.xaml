@@ -1,0 +1,480 @@
+<UserControl x:Class="NavalArchitectureSuite.Views.BowDesignView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="1220" d:DesignHeight="900">
+
+    <UserControl.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#122A52"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C8960C"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,8,0,3"/>
+        </Style>
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="#C8960C"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="SelectionBrush" Value="#C8960C"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#C8960C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="StatTileStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0E2545"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+        </Style>
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10"/>
+        </Style>
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <Style x:Key="AssessStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#3DDC84"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <Style x:Key="NoteStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="Opacity" Value="0.85"/>
+        </Style>
+        <Style x:Key="RowLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="RowValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2C94C"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="36,28,36,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
+            <Border Width="56" Height="56" CornerRadius="28" Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="2">
+                <TextBlock Text="BD" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel Margin="18,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Bow Design" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Entry Angle, Bulbous Bow (Kracht 1978), Anchor Equipment (IACS UR A1)" FontSize="13" Foreground="#C8960C" Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,18,0,18"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+
+                <!-- ══ ROW 1: Bow Geometry + Bulb parameters ══ -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Bow Geometry inputs (read-only from ShipBuilder) -->
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Text="From Ship Builder" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Text="All inputs are read automatically from the Ship Builder module." Style="{StaticResource NoteStyle}" Margin="0,0,0,10"/>
+
+                            <TextBlock Text="Lpp (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Lpp, Mode=OneWay, StringFormat=F2}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Breadth, B (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Breadth, Mode=OneWay, StringFormat=F2}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Draft, T (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Draft, Mode=OneWay, StringFormat=F2}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Cb" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cb, Mode=OneWay, StringFormat=F3}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Cwp" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Cwp, Mode=OneWay, StringFormat=F3}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Displacement, Δ (t)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Displacement, Mode=OneWay, StringFormat=N0}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <TextBlock Text="Design Speed (kn)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding DesignSpeed, Mode=OneWay, StringFormat=F1}" IsReadOnly="True" Opacity="0.7"/>
+
+                            <Rectangle Height="1" Fill="#24467F" Margin="0,14,0,10"/>
+
+                            <TextBlock Text="Anchor Equipment Extras" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <TextBlock Text="Freeboard — SLWL to top of house (m)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Freeboard, UpdateSourceTrigger=PropertyChanged, StringFormat=F1}"/>
+
+                            <TextBlock Text="Lateral Windage Area above SLWL (m²)" Style="{StaticResource InputLabelStyle}"/>
+                            <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding LateralWindageArea, UpdateSourceTrigger=PropertyChanged, StringFormat=F0}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Right side: Geometry results + Kracht inputs -->
+                    <StackPanel Grid.Column="2">
+
+                        <!-- Bow Geometry results -->
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Bow Geometry — Kracht (1978) Entry Angle" Style="{StaticResource SectionTitleStyle}"/>
+                                <ItemsControl>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate><UniformGrid Columns="4"/></ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <Border Style="{StaticResource StatTileStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="FROUDE NUMBER" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding FroudeNumber, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Style="{StaticResource StatTileStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="PRISMATIC Cp" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding Cp, StringFormat={}{0:F3}}" Style="{StaticResource StatValueStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Style="{StaticResource StatTileStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="HALF ENTRY ANGLE αE" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding HalfEntryAngleDeg, StringFormat={}{0:F1}°}" Style="{StaticResource StatValueStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Style="{StaticResource StatTileStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="FULL ENTRY ANGLE 2αE" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding FullEntryAngleDeg, StringFormat={}{0:F1}°}" Style="{StaticResource StatValueStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </ItemsControl>
+
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Style="{StaticResource StatTileStyle}" Margin="0">
+                                        <StackPanel>
+                                            <TextBlock Text="ENTRY ANGLE ASSESSMENT" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding EntryAngleAssessment}" Style="{StaticResource AssessStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="2" Style="{StaticResource StatTileStyle}" Margin="0">
+                                        <StackPanel>
+                                            <TextBlock Text="FROUDE NUMBER REGIME" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding FroudeRegime}" Style="{StaticResource AssessStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Style="{StaticResource StatTileStyle}" Margin="0">
+                                        <StackPanel>
+                                            <TextBlock Text="RECOMMENDED STEM TYPE" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding RecommendedStemType}" Style="{StaticResource AssessStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="2" Style="{StaticResource StatTileStyle}" Margin="0">
+                                        <StackPanel>
+                                            <TextBlock Text="RECOMMENDED BULB TYPE (Kracht 1978)" Style="{StaticResource StatLabelStyle}"/>
+                                            <TextBlock Text="{Binding RecommendedBulbType}" Style="{StaticResource AssessStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Kracht inputs -->
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Kracht (1978) Bulb Parameters — SNAME Trans. 86:197–217" Style="{StaticResource SectionTitleStyle}"/>
+                                <TextBlock Style="{StaticResource NoteStyle}" Margin="0,0,0,12"
+                                           Text="Edit the five Kracht parameters below. Typical ranges for cargo ships at Fn 0.18–0.25: C_BB 0.10–0.25 | C_BL 0.02–0.06 | C_BT 0.05–0.12 | C_BV 0.003–0.012 | C_BPo 0.30–0.60."/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="C_BB — Breadth" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CBB, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+                                        <TextBlock Text="0.10–0.25" Style="{StaticResource NoteStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="C_BL — Length" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CBL, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+                                        <TextBlock Text="0.02–0.06" Style="{StaticResource NoteStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="C_BT — Transv. Area" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CBT, UpdateSourceTrigger=PropertyChanged, StringFormat=F3}"/>
+                                        <TextBlock Text="0.05–0.12" Style="{StaticResource NoteStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="6">
+                                        <TextBlock Text="C_BV — Volume" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CBV, UpdateSourceTrigger=PropertyChanged, StringFormat=F4}"/>
+                                        <TextBlock Text="0.003–0.012" Style="{StaticResource NoteStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="8">
+                                        <TextBlock Text="C_BPo — Position" Style="{StaticResource InputLabelStyle}"/>
+                                        <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding CBPo, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+                                        <TextBlock Text="0.30–0.60" Style="{StaticResource NoteStyle}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ══ ROW 2: Bulb dimensions + Holtrop R_B ══ -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Bulb Dimensions and Holtrop-Mennen Connection" Style="{StaticResource SectionTitleStyle}"/>
+                        <ItemsControl>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><UniformGrid Columns="5"/></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="B_WL — WATERPLANE BREADTH AT FP" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BWL, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="≈ B × Cwp" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="B_B — BULB BREADTH" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BulbBreadth, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="C_BB × B_WL" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="L_B — PROTRUSION FORWARD OF FP" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BulbLength, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="C_BL × Lpp" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="A_BT — TRANSVERSE AREA AT FP" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding ABT, StringFormat={}{0:F2} m²}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="→ Holtrop-Mennen input" Style="{StaticResource NoteStyle}" Foreground="#C8960C"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="V_B — BULB VOLUME" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BulbVolume, StringFormat={}{0:F1} m³}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="C_BV × 0.5 × Lpp × B_WL × T" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="z_B — CENTROID HEIGHT (h_B)" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding ZB, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="→ Holtrop-Mennen h_B input" Style="{StaticResource NoteStyle}" Foreground="#C8960C"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="f_pb — IMMERSION PARAMETER" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding FPB, StringFormat={}{0:F4}}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="Holtrop (1984) Eq.11" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="R_B — BULB WAVE-BREAKING RESISTANCE" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding RB, StringFormat={}{0:F3} kN}" Style="{StaticResource StatValueStyle}"/>
+                                    <TextBlock Text="Holtrop (1984) Eq.12" Style="{StaticResource NoteStyle}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}" Grid.Column="4">
+                                <StackPanel>
+                                    <TextBlock Text="BULB SUBMERGENCE" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BulbSubmergenceStatus}" Style="{StaticResource AssessStyle}" FontSize="10"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatTileStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="BALLAST CONDITION CHECK" Style="{StaticResource StatLabelStyle}"/>
+                                    <TextBlock Text="{Binding BallastDraughtStatus}" Style="{StaticResource AssessStyle}" FontSize="10"/>
+                                </StackPanel>
+                            </Border>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- ══ ROW 3: SOLAS + Anchor Equipment ══ -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- SOLAS Collision Bulkhead -->
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="SOLAS Collision Bulkhead — Ch.II-1 Reg.11" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Style="{StaticResource NoteStyle}" Margin="0,0,0,10"
+                                       Text="Mandatory for all ships &gt; 65 m. Must be positioned between 5% and 8% of Lpp from the FP (or 5%L + 3 m for ships &gt; 200 m). Source: SOLAS 2020 Ch.II-1 Reg.11."/>
+
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="MINIMUM POSITION (0.05 × L from FP)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding CollisionBulkheadMin, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="MAXIMUM POSITION FROM FP" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding CollisionBulkheadMax, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="RECOMMENDED POSITION" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding CollisionBulkheadRecommended, StringFormat={}{0:F2} m}" Style="{StaticResource StatValueStyle}" Foreground="#3DDC84"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- IACS UR A1 Anchor Equipment -->
+                    <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Anchor Equipment — IACS UR A1 (2019)" Style="{StaticResource SectionTitleStyle}"/>
+                            <TextBlock Style="{StaticResource NoteStyle}" Margin="0,0,0,10"
+                                       Text="EN = Δ²/³ + 2×B×h + A_lat/10. Chain breaking load per IACS UR W22 Grade K2 stud link. Source: IACS UR A1 (2019) Table 1."/>
+
+                            <ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="EQUIPMENT NUMBER EN" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding EquipmentNumber, StringFormat={}{0:F0}}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="ANCHOR MASS (per bower)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding AnchorMassTonnes, StringFormat={}{0:F2} t}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CHAIN DIAMETER (stud link)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ChainDiameterMm, StringFormat={}{0:F1} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CHAIN LENGTH (per cable)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ChainLengthM, StringFormat={}{0:F0} m}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="NUMBER OF SHOTS (× 27.5 m)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ChainShots, StringFormat={}{0} shots}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="CHAIN BREAKING LOAD (K2)" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding ChainBreakingLoadKN, StringFormat={}{0:F0} kN}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource StatTileStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="HAWSE PIPE INNER DIAMETER" Style="{StaticResource StatLabelStyle}"/>
+                                        <TextBlock Text="{Binding HawsePipeDiameterMm, StringFormat={}{0:F0} mm}" Style="{StaticResource StatValueStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ══ Reference note ══ -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,8">
+                    <StackPanel>
+                        <TextBlock Text="References" Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Style="{StaticResource NoteStyle}"
+                                   Text="Kracht A.M. (1978) Design of bulbous bows. SNAME Transactions 86:197–217.  |  Holtrop J. (1984) A statistical re-analysis of resistance and propulsion data. ISP 31(363):272–276. Eq.11–12 (f_pb, R_B).  |  IACS UR A1 (2019) Anchoring Equipment. Section 2 (Equipment Number), Table 1.  |  IACS UR W22 (2019) Stud Link Chain Cables. Table 2 (breaking load formula).  |  SOLAS (2020 Consolidated Edition) Chapter II-1 Part B Regulation 11 (collision bulkhead)."/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -449,6 +449,9 @@
                                 <CheckBox Content="Manoeuvring — Turning Circle &amp; Zig-Zag"
                                           IsChecked="{Binding IncludeManoeuvring}"
                                           Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Bow Design — Kracht Bulb, Anchor Equipment"
+                                          IsChecked="{Binding IncludeBowDesign}"
+                                          Style="{StaticResource InputCheckBoxStyle}"/>
                             </UniformGrid>
                         </StackPanel>
                     </Border>

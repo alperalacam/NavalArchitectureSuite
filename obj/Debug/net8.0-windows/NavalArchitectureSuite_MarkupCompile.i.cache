@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Temp\NavalArchitectureSuite\App.xaml
-151471220672
+16-332251801
 
-491639526864
+501164368755
 2161100112754
-MainWindow.xaml;Views\DamageStabilityView.xaml;Views\HullViewportWindow.xaml;Views\HydrostaticsView.xaml;Views\LngSystemsView.xaml;Views\MachineryView.xaml;Views\ManoeuvringView.xaml;Views\ModulePlaceholderView.xaml;Views\ReportsView.xaml;Views\ResistancePropulsionView.xaml;Views\ShipBuilderView.xaml;Views\StabilityView.xaml;Views\TonnageFreeboardView.xaml;Views\WeldingView.xaml;Views\YachtDesignView.xaml;
+MainWindow.xaml;Views\BowDesignView.xaml;Views\DamageStabilityView.xaml;Views\HullViewportWindow.xaml;Views\HydrostaticsView.xaml;Views\LngSystemsView.xaml;Views\MachineryView.xaml;Views\ManoeuvringView.xaml;Views\ModulePlaceholderView.xaml;Views\ReportsView.xaml;Views\ResistancePropulsionView.xaml;Views\ShipBuilderView.xaml;Views\StabilityView.xaml;Views\TonnageFreeboardView.xaml;Views\WeldingView.xaml;Views\YachtDesignView.xaml;
 
 False
 
