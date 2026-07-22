@@ -1,0 +1,198 @@
+================================================================================
+  NAVAL ARCHITECTURE ENGINEERING SUITE
+  RELEASE NOTES
+================================================================================
+
+
+--------------------------------------------------------------------------------
+VERSION 1.0  -  July 2026
+INITIAL PUBLIC RELEASE
+--------------------------------------------------------------------------------
+
+Release Date : July 2026
+Platform     : Windows 10 / 11  (x64)
+Runtime      : .NET 8.0
+Total Live Formulas : 3,358
+
+ABOUT THIS RELEASE
+------------------
+Version 1.0 is the first public release of the Naval Architecture Engineering
+Suite. It is a free, standalone desktop application for naval architects and
+marine engineers, covering the essential calculations of early-stage ship design
+in a single, connected tool with a unified dark navy / gold interface.
+
+The suite was developed and is dedicated to the belief that professional
+engineering tools should be freely accessible to every engineer, student, and
+researcher worldwide.
+
+
+MODULES INCLUDED IN VERSION 1.0
+---------------------------------
+
+  MODULE                   FORMULAS   KEY REFERENCES / METHODS
+  -----------------------  ---------  ----------------------------------------
+  Ship Builder                  180   Parametric hull geometry, power-law
+                                      sections, Lackenby envelope, Lines Plan
+                                      (21 stations: Body Plan / Sheer / Half-
+                                      Breadth), 3D HelixToolkit viewport.
+
+  Hydrostatics                  360   First-principles parametric hydrostatics;
+                                      KB, BM, KM, GM, GZ curve.
+
+  Stability                     335   IMO 2008 IS Code (MSC.267(85));
+                                      GZ curve, all statutory criteria,
+                                      weather criterion reference.
+
+  Resistance & Propulsion       460   Holtrop & Mennen (1982, 1984);
+                                      Rt, EHP, DHP, BHP vs speed curves.
+
+  Machinery                     310   50-engine database (MAN B&W, Wartsila,
+                                      Caterpillar, and others); SFOC curve;
+                                      IMO EEDI (MEPC.212(63)); NOx Tier II/III
+                                      (MARPOL Annex VI).
+
+  Damage Stability              240   SOLAS 2020 Ch.II-1 simplified lost-
+                                      buoyancy method; subdivision index A/R.
+
+  Welding                       195   AWS D1.1 / DNV-ST-B101; butt and fillet
+                                      joint sizing, carbon equivalent, preheat,
+                                      heat input, WPS electrode selection.
+
+  Yacht Design                  220   VPP (simplified); DLR, SADR, CSF,
+                                      Comfort Ratio, Dellenbaugh Angle,
+                                      MCA / RCD comfort indices.
+
+  LNG Systems                   205   IGC Code (MSC.5(48)); U*A*DT heat
+                                      ingress model; BOG rate, FGSS coverage,
+                                      cooldown estimate.
+
+  Manoeuvring                   280   IMO MSC.137(76); turning circle (Kijima
+                                      regression), zig-zag response, advance,
+                                      tactical diameter, overshoot angle.
+
+  Tonnage & Freeboard           310   ITC 1969 (International Tonnage
+                                      Convention); ICLL 1966 / 1988 Protocol;
+                                      all six load line marks; bow height
+                                      (Reg. 39).
+
+  Bow Design                    112   Kracht (1978) bulbous bow method; half-
+                                      entry angle; IACS UR A1 (2019) anchor
+                                      equipment number; SOLAS Ch.II-1 Reg.11
+                                      collision bulkhead.
+
+  Reports                        95   PDF export (SimplePdfDocument engine);
+                                      paper sizes A4 / A3 / A1 / A0; all 13
+                                      module sections selectable; project title
+                                      block; formula library audit.
+
+  General / Shared Utilities     56   Unit conversions, shared geometry,
+                                      OxyPlot chart renderer, window settings.
+                                      ---------
+  TOTAL                       3,358
+
+
+NEW FEATURES IN VERSION 1.0 (ALL NEW - INITIAL RELEASE)
+---------------------------------------------------------
+  - Full 14-module connected suite in a single WPF desktop application
+  - Dark navy / gold palette throughout (Helvetica-equivalent fonts)
+  - 3D hull preview with real-time heel slider and pop-out window
+  - Parametric Lines Plan with three views (Body Plan, Sheer, Half-Breadth),
+    21 stations, lines-only drafting style (gold waterlines / blue stations)
+  - PDF export with per-section checkboxes and paper size selector
+  - 50-engine machinery database with SFOC curves
+  - Window position and size persist between sessions
+  - Runs fully offline - no internet connection required
+  - No registration, no account, no telemetry
+
+
+KNOWN LIMITATIONS IN VERSION 1.0
+---------------------------------
+  - No project save / load. All inputs are session-only and must be
+    re-entered each time the application is launched.
+
+  - Hull geometry is parametric (power-law sections). It is a visual aid
+    and teaching tool, not a production lofting system.
+
+  - PDF charts are rasterised (PNG embedded). Vector PDF not supported.
+
+  - Resistance prediction uses Holtrop-Mennen regression. Applicability
+    is limited to conventional monohull displacement vessels.
+
+  - Damage stability uses a simplified SOLAS II-1 teaching model, not a
+    full probabilistic flooding simulation.
+
+  - LNG heat ingress uses a lumped single-zone U*A*DT model.
+
+  - No import of external hull offsets or CAD geometry.
+
+  - No multi-language support. Interface language is English only.
+
+
+--------------------------------------------------------------------------------
+WHAT IS COMING IN VERSION 2
+--------------------------------------------------------------------------------
+
+The following features are planned for Version 2 (target: 2027):
+
+  PROJECT SAVE / LOAD
+    - Save and reload complete vessel projects to/from file (.nasp format)
+    - Recent projects list on startup
+
+  HULL GEOMETRY
+    - Import of offset tables (CSV / Excel format)
+    - Improved body plan with fairing controls
+    - Export of offset table to Excel
+
+  CALCULATIONS
+    - Bonjean curves and sectional area curve
+    - Trim and stability with multiple tanks and loading items
+    - Free surface correction per compartment
+    - MARPOL Annex I simplified Oil Record Book reference
+    - Propeller design (B-series and Ka-series open water charts)
+    - Seakeeping response (RAO-based significant motion estimates)
+
+  REPORTING
+    - Vector PDF output
+    - Excel calculation summary export
+    - Multi-page title block with company logo support
+
+  PLATFORM
+    - Installer with automatic .NET 8 detection and download
+    - Auto-update notification
+    - Optional dark / light theme toggle
+
+  MODULES (NEW)
+    - Mooring and anchor line tension (simplified catenary)
+    - Fire safety (SOLAS Ch.II-2 zone concept reference)
+    - Class society scantling reference (IACS Common Structural Rules)
+
+Suggestions and feature requests are welcome via LinkedIn.
+
+
+--------------------------------------------------------------------------------
+ACKNOWLEDGEMENTS
+--------------------------------------------------------------------------------
+Naval Architecture Engineering Suite Version 1.0 was designed, developed, and
+released by Alper Alacam as a free contribution to the naval architecture and
+marine engineering community.
+
+The suite implements methods from the following principal references:
+  - Holtrop, J. & Mennen, G.G.J. (1982, 1984). An approximate power prediction
+    method. International Shipbuilding Progress.
+  - Kracht, A.M. (1978). Design of bulbous bows. SNAME Transactions.
+  - IMO IS Code (MSC.267(85)), 2008.
+  - SOLAS 2020 Consolidated Edition.
+  - ICLL 1966 / 1988 Protocol.
+  - ITC 1969.
+  - IACS Unified Requirement A1, 2019.
+  - IMO EEDI Guidelines (MEPC.212(63)).
+  - IMO Manoeuvrability Standards (MSC.137(76)).
+  - IGC Code (MSC.5(48)), 2016 Edition.
+  - AWS D1.1 Structural Welding Code - Steel.
+
+Dedicated to engineers everywhere who believe that knowledge should be free.
+
+================================================================================
+  (c) 2026 Alper Alacam Naval Architecture - Concept Design Studio, Turkiye.
+  All rights reserved.
+================================================================================

@@ -1,0 +1,248 @@
+================================================================================
+  NAVAL ARCHITECTURE ENGINEERING SUITE  -  Version 1.0
+  HOW TO USE GUIDE
+================================================================================
+
+GETTING STARTED
+---------------
+Launch the application from the Desktop shortcut or Start Menu.
+The left-hand navigation panel lists all fourteen modules.
+Click any module name to open it. All modules share the same vessel data
+entered in Ship Builder - start there before using any other module.
+
+
+--------------------------------------------------------------------------------
+HOW TO USE SHIP BUILDER
+--------------------------------------------------------------------------------
+Ship Builder is the master input sheet. Every other module reads from it.
+
+Step 1 - Enter Principal Dimensions:
+  - Vessel Type    : Select from the dropdown (Bulk Carrier, Tanker, etc.)
+  - Lpp            : Length between perpendiculars in metres
+  - B              : Breadth moulded in metres
+  - D              : Depth moulded in metres
+  - T              : Draft moulded in metres
+  - V              : Design speed in knots
+
+Step 2 - Enter Hull Form Coefficients:
+  - Cb             : Block coefficient (typical range 0.55 - 0.85)
+  - Cm             : Midship section coefficient (typical range 0.92 - 0.99)
+  - Cwp            : Waterplane area coefficient (typical range 0.70 - 0.92)
+  - Cp             : Prismatic coefficient (for reference; auto-calculated as Cb/Cm)
+
+Step 3 - Read Derived Parameters:
+  The tiles on the right update instantly:
+  Volume (m3), Displacement (t), Freeboard (m), L/B, B/T, D/T,
+  Froude Number, Speed-Length Ratio, Calculated Cp.
+
+Step 4 - 3D Hull Preview:
+  The 3D viewport shows a parametric hull surface generated from your inputs.
+  Use the toolbar buttons to change view (Reset / Top / Side / Front).
+  Drag the Heel Angle slider to heel the hull. Click "Upright" to reset.
+  Click "Pop Out 3D View" for a larger resizable window.
+
+Step 5 - Lines Plan:
+  Three tabs show the parametric lines plan drawn from your dimensions:
+  - Body Plan      : 21 station sections (forward right, aft left)
+  - Sheer Plan     : Profile view with waterlines and buttock lines
+  - Half-Breadth   : Top view with waterlines and deck outline
+
+  Tick the checkboxes above the tabs to include each view in the PDF export.
+  All three update instantly as you change any dimension.
+
+TIP: Change any dimension and every module in the suite updates automatically.
+
+
+--------------------------------------------------------------------------------
+HOW TO USE HYDROSTATICS
+--------------------------------------------------------------------------------
+The Hydrostatics module computes key hydrostatic properties from the parametric
+hull defined in Ship Builder.
+
+Inputs (auto-filled from Ship Builder, adjustable here):
+  - Draft T
+  - Block coefficient Cb
+
+Outputs:
+  - Displacement (tonnes)
+  - KB  : Height of centre of buoyancy above keel
+  - KM  : Metacentric height above keel (KB + BM)
+  - BM  : Metacentric radius
+  - GM  : Initial metacentric height
+
+GZ Curve Chart:
+  The chart shows the righting lever GZ (m) against heel angle (deg).
+  Hover over the chart to read individual values.
+
+Interpretation:
+  - GM > 0          : Vessel is initially stable
+  - Positive GZ range should extend to at least 30 deg for most vessels
+  - The chart shape (slope at origin = GM) indicates initial stiffness
+
+
+--------------------------------------------------------------------------------
+HOW TO USE RESISTANCE AND PROPULSION
+--------------------------------------------------------------------------------
+Uses the Holtrop-Mennen (1982/1984) method - an industry-standard regression
+for calm-water resistance prediction of conventional displacement vessels.
+
+Inputs:
+  - All hull dimensions flow from Ship Builder automatically
+  - Adjust design speed range (min/max knots) if needed
+  - Enter appendage details, sea margin percentage if available
+
+Outputs:
+  - Rt    : Total calm-water resistance (kN) at each speed
+  - EHP   : Effective horsepower / Effective power (kW)
+  - DHP   : Delivered power (kW) - accounts for propulsive efficiency
+  - BHP   : Brake power (kW) - includes transmission losses
+
+Charts:
+  - Resistance vs Speed curve showing Rt (total), Rf (frictional), Rr (residuary)
+  - Power vs Speed curves
+
+Interpretation:
+  - The design speed BHP is the minimum engine MCR to sustain that speed
+    in calm water with no sea margin applied
+  - Apply a 15-20% sea margin in practice for open-water service
+  - Rf dominates at low Froude numbers (Fn < 0.20), Rr dominates at higher speeds
+
+
+--------------------------------------------------------------------------------
+HOW TO USE MACHINERY AND EEDI CHECKER
+--------------------------------------------------------------------------------
+The Machinery module sizes the main engine against the power demand from the
+Resistance & Propulsion module and checks environmental compliance.
+
+Step 1 - Select an Engine:
+  Use the engine dropdown (50 engines available from major manufacturers).
+  The database includes MAN B&W, Wartsila, Caterpillar, and others.
+
+Step 2 - Set Power Parameters:
+  - MCR  : Maximum continuous rating (kW) - engine nameplate power
+  - CSR  : Continuous service rating - typically 85-90% of MCR
+
+Step 3 - Read SFOC Curve:
+  The Specific Fuel Oil Consumption curve shows fuel burn (g/kWh) vs engine
+  load (% MCR). The CSR and MCR operating points are marked.
+
+Step 4 - EEDI Check:
+  - Attained EEDI is calculated automatically from the vessel parameters
+  - Compare against the Required EEDI for the vessel type and size
+  - EEDI Phase 3 limits apply to vessels contracted after Jan 2022
+
+Step 5 - NOx Compliance:
+  - Tier II applies to vessels built 2011-2015
+  - Tier III applies to vessels built 2016+ operating in ECAs
+
+Interpretation:
+  - If BHP from Resistance & Propulsion exceeds CSR, select a larger engine
+  - EEDI < Required EEDI = compliant
+  - Daily fuel consumption at CSR gives basis for voyage fuel estimates
+
+
+--------------------------------------------------------------------------------
+HOW TO USE STABILITY MODULE
+--------------------------------------------------------------------------------
+Evaluates intact stability against the IMO 2008 International Stability Code (IS Code).
+
+Step 1 - Select a Loading Condition:
+  Choose from the dropdown (Full Load, Ballast, Light Ship, etc.)
+
+Step 2 - Read the GZ Curve:
+  The chart plots righting lever GZ (m) against heel angle (deg) for the
+  selected loading condition.
+
+Step 3 - Check IMO IS Code Criteria:
+  The criteria panel shows PASS/FAIL for each requirement:
+
+  - Area under GZ from 0 to 30 deg  >= 0.055 m.rad
+  - Area under GZ from 0 to 40 deg  >= 0.090 m.rad
+  - Area under GZ from 30 to 40 deg >= 0.030 m.rad
+  - GZ at 30 degrees of heel        >= 0.200 m
+  - Maximum GZ angle                >= 25 degrees
+  - Range of positive stability      >= 15 degrees beyond angle of flooding
+  - GM (fluid)                       >= 0.150 m
+
+Interpretation:
+  - All criteria must show PASS for the vessel to meet the IS Code
+  - A steep initial slope (large GM) indicates good initial stability
+    but may mean a stiff (uncomfortable) vessel in a seaway
+  - A large range of positive stability is important for vessel safety
+    in severe wind and wave conditions
+  - GM alone is not sufficient - GZ curve shape matters
+
+
+--------------------------------------------------------------------------------
+HOW TO EXPORT A PDF REPORT
+--------------------------------------------------------------------------------
+Step 1 - Navigate to the Reports module.
+
+Step 2 - Fill in the Project Title Block (left panel):
+  - Project Name, Project Number, Client, Classification Society,
+    Prepared By (your company name).
+
+Step 3 - Select Paper Size:
+  - A4  : Standard report format
+  - A3  : Larger format with bigger charts
+  - A1  : Engineering drawing size
+  - A0  : Full-size body plan drawing format
+
+Step 4 - Tick the sections to include:
+  Each module has a checkbox. Untick any module you do not want in the report.
+  The Lines Plan section exports whichever of the three views (Body Plan /
+  Sheer Plan / Half-Breadth) are ticked in the Ship Builder module.
+
+Step 5 - Click "Export Report Index (.pdf)":
+  A Save dialog appears. Choose your folder and filename. Click Save.
+  The PDF is generated and saved. The status message confirms the file path.
+
+Step 6 - Open the PDF:
+  Navigate to the saved file and open with any PDF viewer (Adobe Acrobat,
+  Windows Edge, Foxit, etc.)
+
+TIP: For the best Lines Plan rendering, navigate to Ship Builder first so all
+three canvases have rendered before you export the PDF.
+
+
+--------------------------------------------------------------------------------
+HOW TO INTERPRET THE RESULTS
+--------------------------------------------------------------------------------
+GENERAL PRINCIPLES:
+
+All results are first-pass concept design estimates. They are based on
+parametric hull geometry and regression methods. For final design, the
+results should be verified with:
+  - Naval architecture software (Maxsurf, NAPA, Rhinoceros, ShipFlow)
+  - Classification society rules and direct calculations
+  - Model tests or CFD for resistance and manoeuvring
+
+QUICK SANITY CHECKS:
+
+  Displacement : For a bulk carrier: Displacement ~ Lpp * B * T * Cb * 1.025
+                 Check your result against this simple estimate.
+
+  GM           : Typical values: 0.5 - 2.0 m for most cargo vessels.
+                 > 3 m may indicate an uncomfortably stiff vessel.
+                 < 0.15 m triggers IS Code failure.
+
+  Froude Number: Fn < 0.20 = slow displacement vessel (bulk carrier, tanker)
+                 Fn 0.20 - 0.35 = medium speed (general cargo, ferry)
+                 Fn > 0.35 = high-speed vessel (fast ferry, patrol craft)
+
+  EEDI         : Lower is better. EEDI Phase 3 requires ~30% improvement
+                 over the 2008 reference line for most vessel types.
+
+  BOG Rate (LNG): Modern membrane tanks: 0.08 - 0.12 %/day
+                  Older Moss tanks:      0.10 - 0.15 %/day
+                  Values above 0.20 %/day indicate poor insulation.
+
+  Equipment Number (Bow Design):
+                 EN < 500 : Small vessel (coaster, OPV)
+                 EN 500-2000 : Medium vessel (general cargo, bulker)
+                 EN > 2000 : Large vessel (Panamax, Capesize)
+
+================================================================================
+  For further guidance, consult the RELEASE_NOTES.txt and README.txt files,
+  or contact Alper Alacam Naval Architecture via LinkedIn.
+================================================================================

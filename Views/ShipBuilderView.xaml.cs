@@ -17,7 +17,10 @@ namespace NavalArchitectureSuite.Views
             Loaded += (_, _) =>
             {
                 ZoomAfterDelay(150);
-                BodyPlan.SetViewModel(ShipBuilderViewModel.Instance);
+                var vm = ShipBuilderViewModel.Instance;
+                BodyPlan.SetViewModel(vm);
+                SheerPlan.SetViewModel(vm);
+                HalfBreadth.SetViewModel(vm);
             };
 
             IsVisibleChanged += (_, e) =>
@@ -27,11 +30,16 @@ namespace NavalArchitectureSuite.Views
             };
         }
 
-        // ── View buttons ─────────────────────────────────────────────────────
+        // ── PDF export checkbox accessors (read by ReportsViewModel) ──────────
+        public bool ExportBodyPlan      => ChkBodyPlan.IsChecked    == true;
+        public bool ExportSheerPlan     => ChkSheerPlan.IsChecked   == true;
+        public bool ExportHalfBreadth   => ChkHalfBreadth.IsChecked == true;
+
+        // ── View buttons ──────────────────────────────────────────────────────
 
         private void ResetViewButton_Click(object sender, RoutedEventArgs e)
         {
-            double lpp = ShipBuilderViewModel.Instance.Lpp;
+            double lpp  = ShipBuilderViewModel.Instance.Lpp;
             double dist = lpp * 2.0;
             HullViewport.SetView(
                 new Point3D(-dist * 0.5, -dist, dist * 0.5),
@@ -97,21 +105,10 @@ namespace NavalArchitectureSuite.Views
 
         // ── Zoom helper ───────────────────────────────────────────────────────
 
-        /// <summary>
-        /// Fires ZoomExtents after a short delay so HelixToolkit's visual tree
-        /// has finished updating after a SetView or layout change.
-        /// </summary>
         private void ZoomAfterDelay(int milliseconds)
         {
-            var timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(milliseconds)
-            };
-            timer.Tick += (_, _) =>
-            {
-                timer.Stop();
-                HullViewport.ZoomExtents(0);
-            };
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(milliseconds) };
+            timer.Tick += (_, _) => { timer.Stop(); HullViewport.ZoomExtents(0); };
             timer.Start();
         }
     }

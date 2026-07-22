@@ -78,8 +78,7 @@
                         <Grid>
                             <ToggleButton x:Name="ToggleButton"
                                           IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                          ClickMode="Press"
-                                          Focusable="False">
+                                          ClickMode="Press" Focusable="False">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
@@ -97,14 +96,12 @@
                                     </ControlTemplate>
                                 </ToggleButton.Template>
                             </ToggleButton>
-                            <ContentPresenter x:Name="ContentSite"
-                                              IsHitTestVisible="False"
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                               Margin="{TemplateBinding Padding}"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"/>
+                                              VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                 <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
@@ -164,6 +161,42 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <!-- Lines Plan tab style -->
+        <Style x:Key="LinesPlanTabStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="#8FA6C9"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="#0A1F3D" BorderBrush="#24467F"
+                                BorderThickness="1,1,1,0" CornerRadius="4,4,0,0"
+                                Padding="{TemplateBinding Padding}" Margin="0,0,4,0">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#122A52"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#C8960C"/>
+                                <Setter Property="Foreground" Value="#F2C94C"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#152F5C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LinesCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#D7E1F0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,20,0"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="36,28,36,20">
@@ -188,8 +221,7 @@
 
         <Rectangle Grid.Row="1" Height="1" Fill="#24467F" Margin="0,20,0,20"/>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" MinWidth="260" MaxWidth="480"/>
@@ -197,6 +229,7 @@
                     <ColumnDefinition Width="*" MinWidth="260"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- LEFT: Inputs -->
                 <StackPanel Grid.Column="0">
                     <Border Style="{StaticResource CardStyle}">
                         <StackPanel>
@@ -243,32 +276,28 @@
                 </StackPanel>
 
                 <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                               ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Cursor="SizeWE"
-                               Style="{StaticResource ViewportSplitterStyle}"/>
+                              ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Cursor="SizeWE"
+                              Style="{StaticResource ViewportSplitterStyle}"/>
 
+                <!-- RIGHT: 3D + stats + Lines Plan -->
                 <StackPanel Grid.Column="2">
+
+                    <!-- 3D Hull Preview -->
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,18">
                         <StackPanel>
                             <TextBlock Text="3D Hull Preview" Style="{StaticResource SectionTitleStyle}"/>
                             <WrapPanel Margin="0,0,0,2">
                                 <Button x:Name="ResetViewButton" Content="Reset View" Click="ResetViewButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Return to the default isometric angle"/>
+                                        Style="{StaticResource ViewportToolbarButtonStyle}" ToolTip="Return to the default isometric angle"/>
                                 <Button x:Name="TopViewButton" Content="Top View" Click="TopViewButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Plan view from above"/>
+                                        Style="{StaticResource ViewportToolbarButtonStyle}" ToolTip="Plan view from above"/>
                                 <Button x:Name="SideViewButton" Content="Side View" Click="SideViewButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Profile view from starboard"/>
+                                        Style="{StaticResource ViewportToolbarButtonStyle}" ToolTip="Profile view from starboard"/>
                                 <Button x:Name="FrontViewButton" Content="Front View" Click="FrontViewButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Body plan view from the bow"/>
+                                        Style="{StaticResource ViewportToolbarButtonStyle}" ToolTip="Body plan view from the bow"/>
                                 <Button x:Name="PopOutViewButton" Content="⤢  Pop Out 3D View" Click="PopOutViewButton_Click"
-                                        Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        ToolTip="Open the 3D hull in a resizable floating window"/>
+                                        Style="{StaticResource ViewportToolbarButtonStyle}" ToolTip="Open the 3D hull in a resizable floating window"/>
                             </WrapPanel>
-
-                            <!-- Heel Angle Slider -->
                             <Grid Margin="0,6,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -279,27 +308,25 @@
                                 <TextBlock Grid.Column="0" Text="Heel Angle" Foreground="#8FA6C9" FontSize="11.5"
                                            VerticalAlignment="Center" Margin="0,0,10,0"/>
                                 <Slider Grid.Column="1" Minimum="-45" Maximum="45" Value="{Binding HeelAngle, Mode=TwoWay}"
-                                        VerticalAlignment="Center" TickFrequency="5" IsSnapToTickEnabled="False"
-                                        Foreground="#C8960C"/>
+                                        VerticalAlignment="Center" TickFrequency="5" IsSnapToTickEnabled="False" Foreground="#C8960C"/>
                                 <TextBlock Grid.Column="2" Foreground="#F2C94C" FontSize="12" FontWeight="Bold"
                                            VerticalAlignment="Center" Margin="10,0,4,0"
                                            Text="{Binding HeelAngle, StringFormat='{}{0:F1}°'}"/>
                                 <Button Grid.Column="3" Content="Upright" Margin="6,0,0,0"
                                         Style="{StaticResource ViewportToolbarButtonStyle}"
-                                        Command="{x:Null}" Click="UprightButton_Click"
-                                        ToolTip="Reset heel to 0°"/>
+                                        Click="UprightButton_Click" ToolTip="Reset heel to 0°"/>
                             </Grid>
                             <Border BorderBrush="#24467F" BorderThickness="1" CornerRadius="4" Background="#0A1F3D" Height="420">
                                 <h:HelixViewport3D x:Name="HullViewport" ZoomExtentsWhenLoaded="True"
-                                                    ShowCoordinateSystem="True"
-                                                    CoordinateSystemHorizontalPosition="Left"
-                                                    CoordinateSystemVerticalPosition="Bottom"
-                                                    CoordinateSystemWidth="60" CoordinateSystemHeight="60"
-                                                    CoordinateSystemLabelForeground="White"
-                                                    ShowViewCube="True"
-                                                    ViewCubeHorizontalPosition="Right"
-                                                    ViewCubeVerticalPosition="Top"
-                                                    Background="#000000">
+                                                   ShowCoordinateSystem="True"
+                                                   CoordinateSystemHorizontalPosition="Left"
+                                                   CoordinateSystemVerticalPosition="Bottom"
+                                                   CoordinateSystemWidth="60" CoordinateSystemHeight="60"
+                                                   CoordinateSystemLabelForeground="White"
+                                                   ShowViewCube="True"
+                                                   ViewCubeHorizontalPosition="Right"
+                                                   ViewCubeVerticalPosition="Top"
+                                                   Background="#000000">
                                     <h:HelixViewport3D.Camera>
                                         <PerspectiveCamera Position="0,0,1000" LookDirection="0,0,-1" UpDirection="1,0,0" FieldOfView="45"/>
                                     </h:HelixViewport3D.Camera>
@@ -313,23 +340,19 @@
                                             </RotateTransform3D>
                                         </ModelVisual3D.Transform>
                                     </ModelVisual3D>
-
-                                    <h:BillboardTextVisual3D Text="BOW" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
-                                                              Position="{Binding BowLabelPosition}"/>
-                                    <h:BillboardTextVisual3D Text="STERN" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
-                                                              Position="{Binding SternLabelPosition}"/>
-                                    <h:BillboardTextVisual3D Text="PORT" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
-                                                              Position="{Binding PortLabelPosition}"/>
-                                    <h:BillboardTextVisual3D Text="STARBOARD" Foreground="#C8960C" FontWeight="Bold" FontSize="16"
-                                                              Position="{Binding StarboardLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="BOW"      Foreground="#C8960C" FontWeight="Bold" FontSize="16" Position="{Binding BowLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="STERN"    Foreground="#C8960C" FontWeight="Bold" FontSize="16" Position="{Binding SternLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="PORT"     Foreground="#C8960C" FontWeight="Bold" FontSize="16" Position="{Binding PortLabelPosition}"/>
+                                    <h:BillboardTextVisual3D Text="STARBOARD" Foreground="#C8960C" FontWeight="Bold" FontSize="16" Position="{Binding StarboardLabelPosition}"/>
                                 </h:HelixViewport3D>
                             </Border>
                             <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0" Opacity="0.8"
-                                       Text="Simplified parametric hull shell generated live from Lpp/B/D/T and the Cb/Cm/Cwp coefficients (station-based, power-law sections) — a modelling aid for visual proportion checks, not a faired lines plan or offset table. Gold plane marks the design waterline."/>
+                                       Text="Simplified parametric hull shell generated live from Lpp/B/D/T and the Cb/Cm/Cwp coefficients — a modelling aid for visual proportion checks. Gold plane marks the design waterline."/>
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource CardStyle}">
+                    <!-- Quick Derived Parameters -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,18">
                         <StackPanel>
                             <TextBlock Text="Quick Derived Parameters" Style="{StaticResource SectionTitleStyle}"/>
                             <UniformGrid Columns="3">
@@ -391,23 +414,56 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource CardStyle}" Margin="0,18,0,0">
+                    <!-- Lines Plan (3 tabs) -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,18">
                         <StackPanel>
-                            <TextBlock Text="Body Plan — 11 Station Sections" Style="{StaticResource SectionTitleStyle}"/>
-                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,8"
-                                       Text="Live body plan sliced from the parametric hull at 10 station intervals (AP to FP). Forward sections on right, aft sections on left. Updates instantly as dimensions change."/>
-                            <local:BodyPlanCanvas x:Name="BodyPlan" Height="300"
-                                                  Background="Transparent" ClipToBounds="True"/>
+                            <TextBlock Text="Lines Plan — 21 Stations" Style="{StaticResource SectionTitleStyle}"/>
+
+                            <!-- PDF export checkboxes -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="Include in PDF:" Foreground="#8FA6C9" FontSize="11.5"
+                                           VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <CheckBox x:Name="ChkBodyPlan"      Content="Body Plan"       IsChecked="True" Style="{StaticResource LinesCheckBoxStyle}"/>
+                                <CheckBox x:Name="ChkSheerPlan"     Content="Sheer Plan"      IsChecked="True" Style="{StaticResource LinesCheckBoxStyle}"/>
+                                <CheckBox x:Name="ChkHalfBreadth"   Content="Half-Breadth"    IsChecked="True" Style="{StaticResource LinesCheckBoxStyle}"/>
+                            </StackPanel>
+
+                            <TabControl x:Name="LinesPlanTabs" Background="#0A1F3D"
+                                        BorderBrush="#24467F" BorderThickness="1">
+                                <TabControl.Resources>
+                                    <Style TargetType="TabItem" BasedOn="{StaticResource LinesPlanTabStyle}"/>
+                                </TabControl.Resources>
+
+                                <TabItem Header="Body Plan">
+                                    <local:BodyPlanCanvas x:Name="BodyPlan" Height="320"
+                                                          Background="Transparent" ClipToBounds="True"/>
+                                </TabItem>
+
+                                <TabItem Header="Sheer Plan">
+                                    <local:SheerPlanCanvas x:Name="SheerPlan" Height="320"
+                                                           Background="Transparent" ClipToBounds="True"/>
+                                </TabItem>
+
+                                <TabItem Header="Half-Breadth Plan">
+                                    <local:HalfBreadthCanvas x:Name="HalfBreadth" Height="320"
+                                                              Background="Transparent" ClipToBounds="True"/>
+                                </TabItem>
+                            </TabControl>
+
+                            <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0" Opacity="0.8"
+                                       Text="Parametric lines plan — 21 stations (AP to FP). Gold = waterlines &amp; sheer line. Light blue = station sections &amp; buttock lines. Updates live as dimensions change. Tick checkboxes above to include views in the PDF report."/>
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource CardStyle}" Margin="0,18,0,0">
+                    <!-- Source Scope -->
+                    <Border Style="{StaticResource CardStyle}">
                         <StackPanel>
                             <TextBlock Text="Source Scope" Style="{StaticResource SectionTitleStyle}"/>
                             <TextBlock Foreground="#D7E1F0" FontSize="13" TextWrapping="Wrap"
                                        Text="Implemented directly from Naval Architecture Teaching Toolkit Volume 1, VESSEL PARAMETERS sheet. This screen reproduces the workbook inputs and cells C26:C34. Constants follow the workbook exactly: seawater density 1.025 t/m³, 0.5144 m/s per knot, and g = 9.81 m/s²."/>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </Grid>
         </ScrollViewer>

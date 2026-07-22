@@ -135,6 +135,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
 
+        <!-- Shared ComboBoxItem style -->
         <Style x:Key="InputComboBoxItemStyle" TargetType="ComboBoxItem">
             <Setter Property="Foreground" Value="#D7E1F0"/>
             <Setter Property="Padding" Value="9,7"/>
@@ -158,6 +159,7 @@
             </Setter>
         </Style>
 
+        <!-- Editable ComboBox (Module / Status fields — user can type freely) -->
         <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="#0A1F3D"/>
             <Setter Property="Foreground" Value="White"/>
@@ -172,8 +174,7 @@
                         <Grid>
                             <ToggleButton x:Name="ToggleButton"
                                           IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                          ClickMode="Press"
-                                          Focusable="False">
+                                          ClickMode="Press" Focusable="False">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
@@ -192,18 +193,82 @@
                                 </ToggleButton.Template>
                             </ToggleButton>
                             <TextBox x:Name="PART_EditableTextBox"
-                                     Background="Transparent"
-                                     Foreground="White"
-                                     CaretBrush="#C8960C"
-                                     BorderThickness="0"
-                                     Padding="{TemplateBinding Padding}"
+                                     Background="Transparent" Foreground="White" CaretBrush="#C8960C"
+                                     BorderThickness="0" Padding="{TemplateBinding Padding}"
                                      FontSize="{TemplateBinding FontSize}"
-                                     VerticalAlignment="Center"
-                                     VerticalContentAlignment="Center"
-                                     HorizontalAlignment="Stretch"
-                                     Margin="0,0,22,0"
+                                     VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                     HorizontalAlignment="Stretch" Margin="0,0,22,0"
                                      IsReadOnly="{TemplateBinding IsReadOnly}"
                                      Focusable="{TemplateBinding IsEditable}"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#1B3A6B" BorderBrush="#C8960C" BorderThickness="1" CornerRadius="4">
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             NON-EDITABLE picker ComboBox — uses ContentPresenter (not TextBox)
+             so the selected item is visible and clicks are not swallowed.
+             Used for the Paper Size selector and any other fixed-choice pickers.
+             ══════════════════════════════════════════════════════════════════ -->
+        <Style x:Key="PickerComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#0A1F3D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#24467F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource InputComboBoxItemStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!-- Full-width toggle opens the drop-down -->
+                            <ToggleButton x:Name="ToggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          ClickMode="Press" Focusable="False">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="22"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="#C8960C"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <!-- ContentPresenter shows the selected item — IsHitTestVisible=False
+                                 so it never blocks the ToggleButton beneath it -->
+                            <ContentPresenter x:Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"
+                                              TextBlock.Foreground="White"
+                                              TextBlock.FontSize="{TemplateBinding FontSize}"/>
+
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                 <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}"
@@ -266,29 +331,23 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ================= INPUTS ================= -->
+                <!-- ================= LEFT: Inputs ================= -->
                 <StackPanel Grid.Column="0">
 
                     <!-- Project title block -->
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                         <StackPanel>
                             <TextBlock Text="Project Title Block" Style="{StaticResource SectionTitleStyle}"/>
-
                             <TextBlock Text="Project Name" Style="{StaticResource InputLabelStyle}" Margin="0,0,0,4"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
-
                             <TextBlock Text="Project Number" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ProjectNumber, UpdateSourceTrigger=PropertyChanged}"/>
-
                             <TextBlock Text="Client" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Client, UpdateSourceTrigger=PropertyChanged}"/>
-
                             <TextBlock Text="Classification Society" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding ClassSociety, UpdateSourceTrigger=PropertyChanged}"/>
-
                             <TextBlock Text="Prepared By (Company)" Style="{StaticResource InputLabelStyle}"/>
                             <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PreparedByCompany, UpdateSourceTrigger=PropertyChanged}"/>
-
                             <TextBlock Foreground="#8FA6C9" FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0" Opacity="0.8"
                                        Text="These fields form the title block on every exported report index and apply to the whole export."/>
                         </StackPanel>
@@ -382,7 +441,7 @@
 
                 </StackPanel>
 
-                <!-- ================= OUTPUTS ================= -->
+                <!-- ================= RIGHT: Outputs ================= -->
                 <StackPanel Grid.Column="2">
 
                     <!-- Export scope -->
@@ -395,12 +454,10 @@
                                         <UniformGrid Columns="2"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-
                                 <Border Style="{StaticResource StatTileStyle}">
                                     <StackPanel>
                                         <TextBlock Text="ENTRIES INCLUDED" Style="{StaticResource StatLabelStyle}"/>
-                                        <TextBlock Text="{Binding ExportSummaryText}" Style="{StaticResource StatValueStyle}"
-                                                   FontSize="15" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding ExportSummaryText}" Style="{StaticResource StatValueStyle}" FontSize="15" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Style="{StaticResource StatTileStyle}">
@@ -418,53 +475,30 @@
                         <StackPanel>
                             <TextBlock Text="PDF Sections to Include" Style="{StaticResource SectionTitleStyle}"/>
 
-                            <!-- Paper size -->
+                            <!-- Paper size — uses PickerComboBoxStyle (non-editable, ContentPresenter based) -->
                             <TextBlock Text="Paper Size" Foreground="#8FA6C9" FontSize="11.5" Margin="0,0,0,4"/>
                             <ComboBox ItemsSource="{x:Static vm:ReportsViewModel.PaperSizeNames}"
                                       SelectedIndex="{Binding PaperSizeIndex}"
-                                      Style="{StaticResource InputComboBoxStyle}"
+                                      Style="{StaticResource PickerComboBoxStyle}"
                                       Margin="0,0,0,14"
-                                      ToolTip="A4 for standard reports. A0 for a full-size body plan drawing (841 x 1189 mm)."/>
+                                      ToolTip="A4 for standard reports. A0 for a full-size body plan drawing (841×1189 mm)."/>
 
                             <TextBlock Foreground="#8FA6C9" FontSize="11" Margin="0,0,0,10" TextWrapping="Wrap"
                                        Text="Tick the sections you want printed in the exported PDF. Title block is always included."/>
                             <UniformGrid Columns="2" Margin="0,4,0,0">
-                                <CheckBox Content="Ship Builder — Principal Particulars"
-                                          IsChecked="{Binding IncludeShipBuilder}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Hydrostatics — KB, KM, BM, GM"
-                                          IsChecked="{Binding IncludeHydrostatics}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Stability — GZ Curve &amp; IMO Criteria"
-                                          IsChecked="{Binding IncludeStability}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Resistance &amp; Propulsion — EHP/BHP"
-                                          IsChecked="{Binding IncludeResistance}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Machinery — Engine, EEDI, NOx"
-                                          IsChecked="{Binding IncludeMachinery}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Damage Stability — SOLAS Summary"
-                                          IsChecked="{Binding IncludeDamageStability}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Welding — Joint Design Summary"
-                                          IsChecked="{Binding IncludeWelding}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Tonnage &amp; Freeboard — ITC/ILLC"
-                                          IsChecked="{Binding IncludeTonnage}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Yacht Design — VPP Polar"
-                                          IsChecked="{Binding IncludeYachtDesign}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Manoeuvring — Turning Circle &amp; Zig-Zag"
-                                          IsChecked="{Binding IncludeManoeuvring}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Bow Design — Kracht Bulb, Anchor Equipment"
-                                          IsChecked="{Binding IncludeBowDesign}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
-                                <CheckBox Content="Body Plan — 11 Station Cross-Sections"
-                                          IsChecked="{Binding IncludeBodyPlan}"
-                                          Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Ship Builder — Principal Particulars"          IsChecked="{Binding IncludeShipBuilder}"     Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Hydrostatics — KB, KM, BM, GM"               IsChecked="{Binding IncludeHydrostatics}"    Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Stability — GZ Curve &amp; IMO Criteria"     IsChecked="{Binding IncludeStability}"       Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Resistance &amp; Propulsion — EHP/BHP"       IsChecked="{Binding IncludeResistance}"      Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Machinery — Engine, EEDI, NOx"               IsChecked="{Binding IncludeMachinery}"       Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Damage Stability — SOLAS Summary"             IsChecked="{Binding IncludeDamageStability}" Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Welding — Joint Design Summary"               IsChecked="{Binding IncludeWelding}"         Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Tonnage &amp; Freeboard — ITC/ILLC"          IsChecked="{Binding IncludeTonnage}"         Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Yacht Design — VPP Polar"                    IsChecked="{Binding IncludeYachtDesign}"     Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Manoeuvring — Turning Circle &amp; Zig-Zag"  IsChecked="{Binding IncludeManoeuvring}"     Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Bow Design — Kracht Bulb, Anchor Equipment"  IsChecked="{Binding IncludeBowDesign}"       Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="LNG Systems — BOG, FGSS, IGC Checklist"      IsChecked="{Binding IncludeLng}"             Style="{StaticResource InputCheckBoxStyle}"/>
+                                <CheckBox Content="Lines Plan — Body / Sheer / Half-Breadth"    IsChecked="{Binding IncludeBodyPlan}"        Style="{StaticResource InputCheckBoxStyle}"/>
                             </UniformGrid>
                         </StackPanel>
                     </Border>
@@ -473,16 +507,14 @@
                     <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                         <StackPanel>
                             <TextBlock Text="Formula Library Audit — Live Formulas by Module" Style="{StaticResource SectionTitleStyle}"/>
-
                             <Grid Margin="4,0,4,8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto" MinWidth="80"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Module" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="0" Text="Module"   Foreground="#8FA6C9" FontSize="11" FontWeight="Bold"/>
                                 <TextBlock Grid.Column="1" Text="Formulas" Foreground="#8FA6C9" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
                             </Grid>
-
                             <ItemsControl ItemsSource="{Binding FormulaAudit}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -492,14 +524,13 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto" MinWidth="80"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Module}" Style="{StaticResource ModuleColTextStyle}"/>
+                                                <TextBlock Grid.Column="0" Text="{Binding Module}"                                    Style="{StaticResource ModuleColTextStyle}"/>
                                                 <TextBlock Grid.Column="1" Text="{Binding FormulaCount, StringFormat={}{0:N0}}" Style="{StaticResource CountColTextStyle}"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-
                             <Grid Margin="4,10,4,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -517,10 +548,8 @@
                             <TextBlock Text="Generate Report Index" Style="{StaticResource SectionTitleStyle}"/>
                             <TextBlock Foreground="#8FA6C9" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,14" Opacity="0.85"
                                        Text="Compiles the project title block, all report entries flagged 'Include in export', and the formula-library audit into a single printable PDF (.pdf) file."/>
-
                             <Button x:Name="ExportButton" Content="Export Report Index (.pdf)" Click="ExportButton_Click"
                                     Style="{StaticResource ExportButtonStyle}"/>
-
                             <TextBlock Text="{Binding ExportStatusMessage}" Foreground="#D7E1F0" FontSize="12"
                                        TextWrapping="Wrap" Margin="0,12,0,0"/>
                         </StackPanel>
