@@ -5,3 +5,10 @@ publish/
 .vs/ 
 installer/NavalArchitectureSuite_v1.0_Setup.exe 
 .tmp-video-deps/ 
+bin/ 
+obj/ 
+.vs/ 
+output/ 
+outputs/ 
+tools/ 
+publish/ 
